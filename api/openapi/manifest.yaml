@@ -1,0 +1,68 @@
+openapi: 3.0.1
+info:
+  title: Pluto Manifest API
+  version: 1.0.0
+paths:
+  /manifests:
+    get:
+      operationId: listManifests
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Manifest"
+components:
+  schemas:
+    Manifest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        version:
+          type: string
+        icon:
+          type: string
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        author_name:
+          type: string
+        author_email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        meta_created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - version
+        - icon
+        - category
+        - tags
+        - author_name
+        - author_email
+        - created_at
+        - meta_created_at

@@ -1,0 +1,21 @@
+version: "2"
+
+sql:
+  - engine: "postgresql"
+    schema: "../../../migrations/manifest/*.up.sql"
+    queries: "queries.sql"
+    database:
+        uri: "${DATABASE_DSN}"
+    gen:
+      go:
+        package: "repository"
+        out: "."
+        emit_interface: true
+        emit_all_enum_values: true
+        emit_enum_valid_method: true
+        output_db_file_name: "repository.go"
+        overrides:
+          - db_type: "uuid"
+            go_type: "github.com/google/uuid.UUID"
+
+# postgres://user:pass@localhost:5432/pluto?sslmode=disable

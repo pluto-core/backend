@@ -1,0 +1,9 @@
+server:
+  port: 8080  # для auth-service; в manifest.yaml — 8081
+database:
+  dsn: "postgres://user:pass@localhost:5432/pluto?sslmode=disable"
+logging:
+  level: debug
+tls:
+  cert_file: /Users/eyadroshnikov/Developer/Pluto/pluto-backend/deploy/nginx/certs/server.crt
+  key_file: /Users/eyadroshnikov/Developer/Pluto/pluto-backend/deploy/nginx/certs/server.key
