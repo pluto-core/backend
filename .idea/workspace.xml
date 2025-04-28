@@ -5,11 +5,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2c15436-e0fc-43ef-8c03-1f679e0b39cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/deploy/nginx/conf.d/default.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/manifest/handlers/api.gen.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/manifest/handlers/routes.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/manifest/repository/sqlc.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/manifest/api/gen/api.gen.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/manifest/api/gen/server.gen.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/manifest/api/impl.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/manifest/bootstrap/bootstrap.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/platform/errors/openapi/handler.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/platform/router/middleware/content-type.middleware.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/platform/utils/get-display-language.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/platform/utils/parse-promary-language.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/openapi/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/manifest.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/auth-service" beforeDir="false" afterPath="$PROJECT_DIR$/bin/auth-service" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/manifest-service" beforeDir="false" afterPath="$PROJECT_DIR$/bin/manifest-service" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/manifest-service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/manifest-service/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/handlers/api.gen.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/handlers/handlers.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/handlers/routes.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/querier.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/querier.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/platform/router/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/router/router.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +47,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Go File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -48,6 +76,8 @@
     "Go Build.go build main.go.executor": "Run",
     "Makefile Target.build.executor": "Run",
     "Makefile Target.generate.executor": "Run",
+    "Makefile Target.manifest-db-generate.executor": "Run",
+    "Makefile Target.manifest-migrate.executor": "Run",
     "Makefile Target.run-auth.executor": "Run",
     "Makefile Target.run-manifest.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
@@ -56,6 +86,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "database.data.extractors.current.export.id": "SQL Inserts",
     "git-widget-placeholder": "main",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
@@ -63,7 +94,8 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "goland.project.structure"
+    "settings.editor.selected.configurable": "goland.project.structure",
+    "ts.external.directory.path": "/Users/eyadroshnikov/Applications/GoLand.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
@@ -73,11 +105,23 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/manifest" />
+      <recent name="$PROJECT_DIR$/internal/platform/router/middleware" />
+      <recent name="$PROJECT_DIR$/internal/manifest/api/gen" />
+      <recent name="$PROJECT_DIR$/internal/manifest/api" />
       <recent name="$PROJECT_DIR$/internal/manifest/handlers" />
-      <recent name="$PROJECT_DIR$/internal/manifest/repository" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.generate">
+  <component name="RunManager" selected="Makefile Target.run-manifest">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="pluto-backend" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="pluto-backend" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/manifest-service/main.go" />
+      <method v="2" />
+    </configuration>
     <configuration name="build" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/Makefile" target="build" workingDirectory="" arguments="">
         <envs />
@@ -86,6 +130,12 @@
     </configuration>
     <configuration name="generate" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/Makefile" target="generate" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="manifest-db-generate" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="manifest-db-generate" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -102,34 +152,13 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="deploy/docker-compose.local.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="sourceFilePath" value="deploy/docker-compose.local.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <configuration name="deploy/docker-compose.local.yml.nginx: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="services">
-            <list>
-              <option value="nginx" />
-            </list>
-          </option>
-          <option name="sourceFilePath" value="deploy/docker-compose.local.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Makefile Target.generate" />
         <item itemvalue="Makefile Target.run-manifest" />
-        <item itemvalue="Docker.deploy/docker-compose.local.yml: Compose Deployment" />
-        <item itemvalue="Docker.deploy/docker-compose.local.yml.nginx: Compose Deployment" />
         <item itemvalue="Makefile Target.build" />
+        <item itemvalue="Makefile Target.manifest-db-generate" />
+        <item itemvalue="Makefile Target.generate" />
+        <item itemvalue="Go Build.go build main.go" />
       </list>
     </recent_temporary>
   </component>

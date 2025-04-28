@@ -19,7 +19,7 @@ func NewChiRouter(cfg config.Config, log *zerolog.Logger) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
-	r.Use(requestLogger(log))
+	r.Use(RequestLogger(log))
 	r.Use(middleware.Recoverer)
 	return r
 }
@@ -54,8 +54,7 @@ func NewServer(
 		// nginx всё равно может пробрасывать файлы сертификатов в /etc/ssl/...
 		certFile := cfg.TLS.CertFile
 		keyFile := cfg.TLS.KeyFile
-		fmt.Println(certFile)
-		fmt.Println(keyFile)
+
 		if err := quicServer.ListenAndServeTLS(certFile, keyFile); err != nil {
 			log.Fatal().Err(err).Msg("http3 ListenAndServeTLS failed")
 		}
@@ -70,7 +69,7 @@ func NewServer(
 	return srv
 }
 
-func requestLogger(logger *zerolog.Logger) func(next http.Handler) http.Handler {
+func RequestLogger(logger *zerolog.Logger) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			logger.Info().

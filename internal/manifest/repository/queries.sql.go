@@ -7,27 +7,45 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
 
-const createManifest = `-- name: CreateManifest :one
-INSERT INTO manifest (id, version, icon, category, tags,
-                      author_name, author_email,
-                      meta_created_at)
-VALUES ($1, $2, $3, $4, $5,
-        $6, $7,
-        $8)
-RETURNING
-    id, version, icon, category, tags,
-    author_name, author_email,
-    created_at, meta_created_at
+const listManifests = `-- name: ListManifests :many
+SELECT m.id,
+       m.version,
+       m.icon,
+       m.category,
+       m.tags,
+       m.author_name,
+       m.author_email,
+       m.created_at,
+       m.meta_created_at,
+       t.value AS title,
+       d.value AS description
+FROM manifest m
+         LEFT JOIN manifest_localizations t
+                   ON t.manifest_id = m.id
+                       AND t.locale = $3::text
+                       AND t.key = 'title'
+         LEFT JOIN manifest_localizations d
+                   ON d.manifest_id = m.id
+                       AND d.locale = $3::text
+                       AND d.key = 'description'
+ORDER BY created_at DESC
+LIMIT $1 OFFSET $2
 `
 
-type CreateManifestParams struct {
+type ListManifestsParams struct {
+	Limit   int64
+	Offset  int64
+	Column3 string
+}
+
+type ListManifestsRow struct {
 	ID            uuid.UUID
 	Version       string
 	Icon          string
@@ -35,178 +53,21 @@ type CreateManifestParams struct {
 	Tags          []string
 	AuthorName    string
 	AuthorEmail   string
+	CreatedAt     time.Time
 	MetaCreatedAt time.Time
+	Title         sql.NullString
+	Description   sql.NullString
 }
 
-func (q *Queries) CreateManifest(ctx context.Context, arg CreateManifestParams) (Manifest, error) {
-	row := q.db.QueryRowContext(ctx, createManifest,
-		arg.ID,
-		arg.Version,
-		arg.Icon,
-		arg.Category,
-		pq.Array(arg.Tags),
-		arg.AuthorName,
-		arg.AuthorEmail,
-		arg.MetaCreatedAt,
-	)
-	var i Manifest
-	err := row.Scan(
-		&i.ID,
-		&i.Version,
-		&i.Icon,
-		&i.Category,
-		pq.Array(&i.Tags),
-		&i.AuthorName,
-		&i.AuthorEmail,
-		&i.CreatedAt,
-		&i.MetaCreatedAt,
-	)
-	return i, err
-}
-
-const createManifestContent = `-- name: CreateManifestContent :one
-INSERT INTO manifest_content (manifest_id, ui, script, actions, permissions, signature)
-VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING manifest_id, ui, script, actions, permissions, signature
-`
-
-type CreateManifestContentParams struct {
-	ManifestID  uuid.UUID
-	Ui          json.RawMessage
-	Script      string
-	Actions     json.RawMessage
-	Permissions []string
-	Signature   string
-}
-
-func (q *Queries) CreateManifestContent(ctx context.Context, arg CreateManifestContentParams) (ManifestContent, error) {
-	row := q.db.QueryRowContext(ctx, createManifestContent,
-		arg.ManifestID,
-		arg.Ui,
-		arg.Script,
-		arg.Actions,
-		pq.Array(arg.Permissions),
-		arg.Signature,
-	)
-	var i ManifestContent
-	err := row.Scan(
-		&i.ManifestID,
-		&i.Ui,
-		&i.Script,
-		&i.Actions,
-		pq.Array(&i.Permissions),
-		&i.Signature,
-	)
-	return i, err
-}
-
-const deleteManifestByID = `-- name: DeleteManifestByID :exec
-DELETE
-FROM manifest
-WHERE id = $1
-`
-
-func (q *Queries) DeleteManifestByID(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteManifestByID, id)
-	return err
-}
-
-const deleteManifestContentByID = `-- name: DeleteManifestContentByID :exec
-DELETE
-FROM manifest_content
-WHERE manifest_id = $1
-`
-
-func (q *Queries) DeleteManifestContentByID(ctx context.Context, manifestID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteManifestContentByID, manifestID)
-	return err
-}
-
-const getManifestByID = `-- name: GetManifestByID :one
-SELECT id,
-       version,
-       icon,
-       category,
-       tags,
-       author_name,
-       author_email,
-       created_at,
-       meta_created_at
-FROM manifest
-WHERE id = $1
-`
-
-func (q *Queries) GetManifestByID(ctx context.Context, id uuid.UUID) (Manifest, error) {
-	row := q.db.QueryRowContext(ctx, getManifestByID, id)
-	var i Manifest
-	err := row.Scan(
-		&i.ID,
-		&i.Version,
-		&i.Icon,
-		&i.Category,
-		pq.Array(&i.Tags),
-		&i.AuthorName,
-		&i.AuthorEmail,
-		&i.CreatedAt,
-		&i.MetaCreatedAt,
-	)
-	return i, err
-}
-
-const getManifestContentByID = `-- name: GetManifestContentByID :one
-SELECT manifest_id,
-       ui,
-       script,
-       actions,
-       permissions,
-       signature
-FROM manifest_content
-WHERE manifest_id = $1
-`
-
-func (q *Queries) GetManifestContentByID(ctx context.Context, manifestID uuid.UUID) (ManifestContent, error) {
-	row := q.db.QueryRowContext(ctx, getManifestContentByID, manifestID)
-	var i ManifestContent
-	err := row.Scan(
-		&i.ManifestID,
-		&i.Ui,
-		&i.Script,
-		&i.Actions,
-		pq.Array(&i.Permissions),
-		&i.Signature,
-	)
-	return i, err
-}
-
-const listManifests = `-- name: ListManifests :many
-SELECT id,
-       version,
-       icon,
-       category,
-       tags,
-       author_name,
-       author_email,
-       created_at,
-       meta_created_at
-FROM manifest
-ORDER BY created_at DESC
-LIMIT $1 OFFSET $2
-`
-
-type ListManifestsParams struct {
-	Limit  int64
-	Offset int64
-}
-
-func (q *Queries) ListManifests(ctx context.Context, arg ListManifestsParams) ([]Manifest, error) {
-	rows, err := q.db.QueryContext(ctx, listManifests, arg.Limit, arg.Offset)
+func (q *Queries) ListManifests(ctx context.Context, arg ListManifestsParams) ([]ListManifestsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listManifests, arg.Limit, arg.Offset, arg.Column3)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Manifest
+	var items []ListManifestsRow
 	for rows.Next() {
-		var i Manifest
+		var i ListManifestsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Version,
@@ -217,6 +78,8 @@ func (q *Queries) ListManifests(ctx context.Context, arg ListManifestsParams) ([
 			&i.AuthorEmail,
 			&i.CreatedAt,
 			&i.MetaCreatedAt,
+			&i.Title,
+			&i.Description,
 		); err != nil {
 			return nil, err
 		}
@@ -244,44 +107,36 @@ SELECT m.id,
 FROM manifest m
          LEFT JOIN manifest_localizations t
                    ON t.manifest_id = m.id
-                       AND t.locale = $2::text
+                       AND t.locale = $1
                        AND t.key = 'title'
          LEFT JOIN manifest_localizations d
                    ON d.manifest_id = m.id
-                       AND d.locale = $2::text
+                       AND d.locale = $1
                        AND d.key = 'description'
 WHERE (
           -- empty search string => return everything
-          ($1::text = '')
+          ($2::text = '')
               -- full-text on title+description
               OR to_tsvector('english',
                              coalesce(t.value, '') || ' ' || coalesce(d.value, '')
-                 ) @@ plainto_tsquery('english', $1::text)
+                 ) @@ plainto_tsquery('english', $2::text)
               -- category ilike
-              OR m.category ILIKE '%' || $1::text || '%'
+              OR m.category ILIKE '%' || $2::text || '%'
               -- any tag matches
               OR EXISTS (SELECT 1
                          FROM unnest(m.tags) AS tag
-                         WHERE tag ILIKE '%' || $1::text || '%')
+                         WHERE tag ILIKE '%' || $2::text || '%')
           )
 ORDER BY m.created_at DESC
-LIMIT $3::int OFFSET $4::int
 `
 
 type SearchManifestsParams struct {
-	Column1 string
-	Column2 string
-	Column3 int32
-	Column4 int32
+	Locale string
+	Search string
 }
 
 func (q *Queries) SearchManifests(ctx context.Context, arg SearchManifestsParams) ([]Manifest, error) {
-	rows, err := q.db.QueryContext(ctx, searchManifests,
-		arg.Column1,
-		arg.Column2,
-		arg.Column3,
-		arg.Column4,
-	)
+	rows, err := q.db.QueryContext(ctx, searchManifests, arg.Locale, arg.Search)
 	if err != nil {
 		return nil, err
 	}
@@ -313,43 +168,84 @@ func (q *Queries) SearchManifests(ctx context.Context, arg SearchManifestsParams
 	return items, nil
 }
 
-const updateManifestContent = `-- name: UpdateManifestContent :one
-UPDATE manifest_content
-SET ui          = $2,
-    script      = $3,
-    actions     = $4,
-    permissions = $5,
-    signature   = $6
-WHERE manifest_id = $1
-RETURNING manifest_id, ui, script, actions, permissions, signature
+const searchManifestsFTS = `-- name: SearchManifestsFTS :many
+SELECT m.id,
+       t.value AS title,
+       d.value AS description,
+       m.version,
+       m.icon,
+       m.category,
+       m.tags,
+       m.author_name,
+       m.author_email,
+       m.created_at,
+       m.meta_created_at
+FROM manifest AS m
+         LEFT JOIN manifest_localizations AS t
+                   ON t.manifest_id = m.id AND t.locale = $1::text AND t.key = 'title'
+         LEFT JOIN manifest_localizations AS d
+                   ON d.manifest_id = m.id AND d.locale = $1::text AND d.key = 'description'
+WHERE to_tsvector($2::regconfig,
+                  coalesce(t.value, '') || ' ' ||
+                  coalesce(d.value, '') || ' ' ||
+                  m.category || ' ' ||
+                  array_to_string(m.tags, ' ')
+      )
+          @@ plainto_tsquery($2::regconfig, $3::text)
+ORDER BY m.created_at DESC
 `
 
-type UpdateManifestContentParams struct {
-	ManifestID  uuid.UUID
-	Ui          json.RawMessage
-	Script      string
-	Actions     json.RawMessage
-	Permissions []string
-	Signature   string
+type SearchManifestsFTSParams struct {
+	Locale string
+	Config interface{}
+	Query  string
 }
 
-func (q *Queries) UpdateManifestContent(ctx context.Context, arg UpdateManifestContentParams) (ManifestContent, error) {
-	row := q.db.QueryRowContext(ctx, updateManifestContent,
-		arg.ManifestID,
-		arg.Ui,
-		arg.Script,
-		arg.Actions,
-		pq.Array(arg.Permissions),
-		arg.Signature,
-	)
-	var i ManifestContent
-	err := row.Scan(
-		&i.ManifestID,
-		&i.Ui,
-		&i.Script,
-		&i.Actions,
-		pq.Array(&i.Permissions),
-		&i.Signature,
-	)
-	return i, err
+type SearchManifestsFTSRow struct {
+	ID            uuid.UUID
+	Title         sql.NullString
+	Description   sql.NullString
+	Version       string
+	Icon          string
+	Category      string
+	Tags          []string
+	AuthorName    string
+	AuthorEmail   string
+	CreatedAt     time.Time
+	MetaCreatedAt time.Time
+}
+
+func (q *Queries) SearchManifestsFTS(ctx context.Context, arg SearchManifestsFTSParams) ([]SearchManifestsFTSRow, error) {
+	rows, err := q.db.QueryContext(ctx, searchManifestsFTS, arg.Locale, arg.Config, arg.Query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SearchManifestsFTSRow
+	for rows.Next() {
+		var i SearchManifestsFTSRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Description,
+			&i.Version,
+			&i.Icon,
+			&i.Category,
+			pq.Array(&i.Tags),
+			&i.AuthorName,
+			&i.AuthorEmail,
+			&i.CreatedAt,
+			&i.MetaCreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

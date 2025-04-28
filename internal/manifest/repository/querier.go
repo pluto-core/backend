@@ -6,20 +6,12 @@ package repository
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 type Querier interface {
-	CreateManifest(ctx context.Context, arg CreateManifestParams) (Manifest, error)
-	CreateManifestContent(ctx context.Context, arg CreateManifestContentParams) (ManifestContent, error)
-	DeleteManifestByID(ctx context.Context, id uuid.UUID) error
-	DeleteManifestContentByID(ctx context.Context, manifestID uuid.UUID) error
-	GetManifestByID(ctx context.Context, id uuid.UUID) (Manifest, error)
-	GetManifestContentByID(ctx context.Context, manifestID uuid.UUID) (ManifestContent, error)
-	ListManifests(ctx context.Context, arg ListManifestsParams) ([]Manifest, error)
+	ListManifests(ctx context.Context, arg ListManifestsParams) ([]ListManifestsRow, error)
 	SearchManifests(ctx context.Context, arg SearchManifestsParams) ([]Manifest, error)
-	UpdateManifestContent(ctx context.Context, arg UpdateManifestContentParams) (ManifestContent, error)
+	SearchManifestsFTS(ctx context.Context, arg SearchManifestsFTSParams) ([]SearchManifestsFTSRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

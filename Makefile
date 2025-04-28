@@ -24,4 +24,4 @@ manifest-migrate:
 
 .PHONY: generate
 generate:
-	go generate ./internal/manifest/handlers
+	go generate ./internal/manifest/api
