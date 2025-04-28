@@ -48,9 +48,9 @@ func (h *Handlers) ListManifests(
 	}
 
 	// преобразуем репозиторские модели в сгенерированный тип Manifest
-	out := make([]gen.Manifest, len(repos))
+	out := make([]gen.ManifestMeta, len(repos))
 	for i, m := range repos {
-		out[i] = gen.Manifest{
+		out[i] = gen.ManifestMeta{
 			Id:            m.ID,
 			Version:       m.Version,
 			Icon:          m.Icon,
@@ -60,8 +60,8 @@ func (h *Handlers) ListManifests(
 			AuthorEmail:   m.AuthorEmail,
 			CreatedAt:     m.CreatedAt,
 			MetaCreatedAt: m.MetaCreatedAt,
-			//Title:         (m.Title), // sql.NullString
-			//Description:   toStringPtr(m.Title), // sql.NullString
+			Title:         *toStringPtr(m.Title), // sql.NullString
+			Description:   *toStringPtr(m.Title), // sql.NullString
 		}
 	}
 
@@ -102,9 +102,9 @@ func (h *Handlers) GetManifestsBySearch(
 	}
 
 	// преобразуем репозиторские модели в сгенерированный тип Manifest
-	out := make([]gen.Manifest, len(repos))
+	out := make([]gen.ManifestMeta, len(repos))
 	for i, m := range repos {
-		out[i] = gen.Manifest{
+		out[i] = gen.ManifestMeta{
 			Id:            m.ID,
 			Version:       m.Version,
 			Icon:          m.Icon,

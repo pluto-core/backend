@@ -9,8 +9,8 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
-// Manifest defines model for Manifest.
-type Manifest struct {
+// ManifestMeta defines model for ManifestMeta.
+type ManifestMeta struct {
 	AuthorEmail   string             `json:"author_email"`
 	AuthorName    string             `json:"author_name"`
 	Category      string             `json:"category"`

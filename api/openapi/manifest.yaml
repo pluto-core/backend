@@ -27,7 +27,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Manifest"
+                  $ref: "#/components/schemas/ManifestMeta"
   /api/manifests/search:
     get:
       operationId: GetManifestsBySearch
@@ -51,10 +51,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Manifest"
+                  $ref: "#/components/schemas/ManifestMeta"
 components:
   schemas:
-    Manifest:
+    ManifestMeta:
       type: object
       properties:
         id:
