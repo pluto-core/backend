@@ -5,15 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2c15436-e0fc-43ef-8c03-1f679e0b39cb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/platform/utils/parse-accept-language-header.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/platform/utils/unmarshal-null-json.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/openapi/auth.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/openapi/auth/openapi.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/openapi/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/openapi/manifest/openapi.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/api.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/api.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/openapi/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/manifest.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/auth-service" beforeDir="false" afterPath="$PROJECT_DIR$/bin/auth-service" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/manifest-service" beforeDir="false" afterPath="$PROJECT_DIR$/bin/manifest-service" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/server.gen.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/api/impl.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/impl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/querier.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/querier.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/manifest/000_init.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/manifest/000_init.up.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +34,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Go File" />
         <option value="TypeScript File" />
+        <option value="Go File" />
       </list>
     </option>
   </component>
@@ -132,8 +143,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Makefile Target.run-manifest" />
-        <item itemvalue="Makefile Target.generate" />
         <item itemvalue="Makefile Target.build" />
+        <item itemvalue="Makefile Target.generate" />
         <item itemvalue="Makefile Target.manifest-db-generate" />
         <item itemvalue="Go Build.go build main.go" />
       </list>

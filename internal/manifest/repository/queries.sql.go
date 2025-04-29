@@ -12,7 +12,91 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
+	"github.com/sqlc-dev/pqtype"
 )
+
+const getManifest = `-- name: GetManifest :one
+WITH localization AS (
+    SELECT
+        ml.manifest_id,
+        json_object_agg(ml.key, ml.value) AS localization
+    FROM manifest_localizations ml
+    WHERE ml.locale = $2::text
+    GROUP BY ml.manifest_id
+)
+SELECT
+    m.id,
+    m.version,
+    m.icon,
+    m.category,
+    m.tags,
+    m.author_name,
+    m.author_email,
+    m.created_at,
+    m.meta_created_at,
+    m.signature,
+    mc.ui AS U_I,
+    mc.script,
+    mc.actions,
+    mc.permissions,
+    l.localization,
+    l.localization ->> 'title'       AS title,
+    l.localization ->> 'description' AS description
+FROM manifest m
+         LEFT JOIN manifest_content mc ON mc.manifest_id = m.id
+         LEFT JOIN localization l ON l.manifest_id = m.id
+WHERE m.id = $1::uuid
+`
+
+type GetManifestParams struct {
+	ManifestID uuid.UUID
+	Locale     string
+}
+
+type GetManifestRow struct {
+	ID            uuid.UUID
+	Version       string
+	Icon          string
+	Category      string
+	Tags          []string
+	AuthorName    string
+	AuthorEmail   string
+	CreatedAt     time.Time
+	MetaCreatedAt time.Time
+	Signature     string
+	UI            pqtype.NullRawMessage
+	Script        sql.NullString
+	Actions       pqtype.NullRawMessage
+	Permissions   []string
+	Localization  pqtype.NullRawMessage
+	Title         sql.NullString
+	Description   sql.NullString
+}
+
+func (q *Queries) GetManifest(ctx context.Context, arg GetManifestParams) (GetManifestRow, error) {
+	row := q.db.QueryRowContext(ctx, getManifest, arg.ManifestID, arg.Locale)
+	var i GetManifestRow
+	err := row.Scan(
+		&i.ID,
+		&i.Version,
+		&i.Icon,
+		&i.Category,
+		pq.Array(&i.Tags),
+		&i.AuthorName,
+		&i.AuthorEmail,
+		&i.CreatedAt,
+		&i.MetaCreatedAt,
+		&i.Signature,
+		&i.UI,
+		&i.Script,
+		&i.Actions,
+		pq.Array(&i.Permissions),
+		&i.Localization,
+		&i.Title,
+		&i.Description,
+	)
+	return i, err
+}
 
 const listManifests = `-- name: ListManifests :many
 SELECT m.id,
@@ -135,15 +219,27 @@ type SearchManifestsParams struct {
 	Search string
 }
 
-func (q *Queries) SearchManifests(ctx context.Context, arg SearchManifestsParams) ([]Manifest, error) {
+type SearchManifestsRow struct {
+	ID            uuid.UUID
+	Version       string
+	Icon          string
+	Category      string
+	Tags          []string
+	AuthorName    string
+	AuthorEmail   string
+	CreatedAt     time.Time
+	MetaCreatedAt time.Time
+}
+
+func (q *Queries) SearchManifests(ctx context.Context, arg SearchManifestsParams) ([]SearchManifestsRow, error) {
 	rows, err := q.db.QueryContext(ctx, searchManifests, arg.Locale, arg.Search)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Manifest
+	var items []SearchManifestsRow
 	for rows.Next() {
-		var i Manifest
+		var i SearchManifestsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Version,

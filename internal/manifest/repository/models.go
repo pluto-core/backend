@@ -21,6 +21,7 @@ type Manifest struct {
 	AuthorEmail   string
 	CreatedAt     time.Time
 	MetaCreatedAt time.Time
+	Signature     string
 }
 
 type ManifestContent struct {
@@ -29,7 +30,6 @@ type ManifestContent struct {
 	Script      string
 	Actions     json.RawMessage
 	Permissions []string
-	Signature   string
 }
 
 type ManifestLocalization struct {

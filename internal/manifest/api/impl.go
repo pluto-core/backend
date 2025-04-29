@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"github.com/rs/zerolog"
 	"net/http"
 	"pluto-backend/internal/manifest/api/gen"
@@ -19,13 +20,11 @@ func NewHandlers(svc *service.Service, log *zerolog.Logger) *Handlers {
 	return &Handlers{Svc: svc, Logger: log}
 }
 
-// ListManifests соответствует операции GET /manifests
 func (h *Handlers) ListManifests(
 	w http.ResponseWriter,
 	r *http.Request,
 	params gen.ListManifestsParams,
 ) {
-	// oapi-codegen уже проверил params.Limit и params.Offset по схеме
 	limit := int32(100)
 	offset := int32(0)
 	if params.Limit != nil {
@@ -47,17 +46,18 @@ func (h *Handlers) ListManifests(
 		return
 	}
 
-	// преобразуем репозиторские модели в сгенерированный тип Manifest
 	out := make([]gen.ManifestMeta, len(repos))
 	for i, m := range repos {
 		out[i] = gen.ManifestMeta{
-			Id:            m.ID,
-			Version:       m.Version,
-			Icon:          m.Icon,
-			Category:      m.Category,
-			Tags:          m.Tags,
-			AuthorName:    m.AuthorName,
-			AuthorEmail:   m.AuthorEmail,
+			Id:       m.ID,
+			Version:  m.Version,
+			Icon:     m.Icon,
+			Category: m.Category,
+			Tags:     m.Tags,
+			Author: gen.Author{
+				Email: m.AuthorEmail,
+				Name:  m.AuthorName,
+			},
 			CreatedAt:     m.CreatedAt,
 			MetaCreatedAt: m.MetaCreatedAt,
 			Title:         *toStringPtr(m.Title), // sql.NullString
@@ -101,17 +101,20 @@ func (h *Handlers) GetManifestsBySearch(
 		return
 	}
 
-	// преобразуем репозиторские модели в сгенерированный тип Manifest
 	out := make([]gen.ManifestMeta, len(repos))
 	for i, m := range repos {
 		out[i] = gen.ManifestMeta{
-			Id:            m.ID,
-			Version:       m.Version,
-			Icon:          m.Icon,
-			Category:      m.Category,
-			Tags:          m.Tags,
-			AuthorName:    m.AuthorName,
-			AuthorEmail:   m.AuthorEmail,
+			Id:       m.ID,
+			Version:  m.Version,
+			Icon:     m.Icon,
+			Category: m.Category,
+			Tags:     m.Tags,
+			Author: gen.Author{
+				Email: m.AuthorEmail,
+				Name:  m.AuthorName,
+			},
+			//AuthorName:    m.AuthorName,
+			//AuthorEmail:   m.AuthorEmail,
 			CreatedAt:     m.CreatedAt,
 			MetaCreatedAt: m.MetaCreatedAt,
 			Title:         *toStringPtr(m.Title),
@@ -120,4 +123,53 @@ func (h *Handlers) GetManifestsBySearch(
 	}
 
 	json.NewEncoder(w).Encode(out)
+}
+
+func (h *Handlers) GetManifestById(
+	w http.ResponseWriter,
+	r *http.Request,
+	id openapi_types.UUID,
+) {
+	locale := utils.ParseAcceptLanguageHeader(r.Header.Get("Accept-Language"))
+
+	repo, err := h.Svc.GetManifestById(r.Context(), id, locale)
+	if err != nil {
+		h.Logger.Error().Err(err).Msg("GetManifestById failed")
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	meta := gen.ManifestMeta{
+		Id:          repo.ID,
+		Title:       nullStringToString(repo.Title),
+		Description: nullStringToString(repo.Description),
+		Author: gen.Author{
+			Email: repo.AuthorEmail,
+			Name:  repo.AuthorName,
+		},
+		CreatedAt: repo.CreatedAt,
+		Version:   repo.Version,
+		Icon:      repo.Icon,
+		Category:  repo.Category,
+		Tags:      repo.Tags,
+	}
+
+	out := gen.Manifest{
+		Meta:         meta,
+		Localization: repo.Localization.RawMessage,
+		Ui:           repo.UI.RawMessage,
+		Script:       repo.UI.RawMessage,
+		Permissions:  repo.Permissions,
+		Signature:    &repo.Signature,
+		Actions:      &repo.Actions.RawMessage,
+	}
+
+	json.NewEncoder(w).Encode(out)
+}
+
+func nullStringToString(ns sql.NullString) string {
+	if ns.Valid {
+		return ns.String
+	}
+	return ""
 }

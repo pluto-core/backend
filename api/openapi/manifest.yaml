@@ -52,8 +52,66 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ManifestMeta"
+  /api/manifests/{id}:
+    get:
+      operationId: GetManifestById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Manifest"
+
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Manifest not found"
 components:
   schemas:
+    Manifest:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/ManifestMeta'
+        localization:
+          $ref: '#/components/schemas/ManifestLocalization'
+        ui:
+          $ref: '#/components/schemas/ManifestUi'
+        script:
+          $ref: '#/components/schemas/ManifestScript'
+        actions:
+          type: array
+          x-go-type: "json.RawMessage"
+          x-go-import: "encoding/json"
+          items:
+            $ref: '#/components/schemas/ManifestAction'
+        permissions:
+          type: array
+          items:
+            type: string
+        signature:
+          type: string
+          description: Base64-Ed25519 signature
+      required:
+        - meta
+        - localization
+        - ui
+        - script
+        - permissions
     ManifestMeta:
       type: object
       properties:
@@ -74,10 +132,8 @@ components:
           type: array
           items:
             type: string
-        author_name:
-          type: string
-        author_email:
-          type: string
+        author:
+          $ref: '#/components/schemas/Author'
         created_at:
           type: string
           format: date-time
@@ -92,7 +148,117 @@ components:
         - icon
         - category
         - tags
-        - author_name
-        - author_email
+        - author
         - created_at
         - meta_created_at
+
+    Author:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - name
+        - email
+
+    ManifestLocalization:
+      type: object
+      x-go-type: "json.RawMessage"
+      x-go-import: "encoding/json"
+      description: Локализованные строки интерфейса для выбранной локали
+      additionalProperties:
+        type: string
+
+    ManifestUi:
+      type: object
+      x-go-type: "json.RawMessage"
+      x-go-import: "encoding/json"
+      description: Конфигурация пользовательского интерфейса (layout + список компонентов)
+      properties:
+        layout:
+          type: object
+          properties:
+            type:
+              type: string
+              description: Тип раскладки (например, "column", "row")
+            spacing:
+              type: integer
+              description: Расстояние (пиксели) между элементами
+            children:
+              type: array
+              items:
+                type: object
+                properties:
+                  "$ref":
+                    type: string
+                    description: ID компонента
+                required:
+                  - "$ref"
+          required:
+            - type
+            - spacing
+            - children
+        components:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              props:
+                type: object
+                additionalProperties: true
+              actions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    onTap:
+                      type: string
+                  required:
+                    - onTap
+            required:
+              - id
+              - type
+              - props
+      required:
+        - layout
+        - components
+
+    ManifestScript:
+      type: object
+      x-go-type: "json.RawMessage"
+      x-go-import: "encoding/json"
+      properties:
+        code:
+          type: string
+          description: |
+            JavaScript-код, выполняемый в клиенте. Включает в себя
+            библиотеку forge и функции encrypt, copyCipher, shareCipher.
+      required:
+        - code
+
+    ManifestAction:
+      type: object
+      x-go-type: "json.RawMessage"
+      x-go-import: "encoding/json"
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        icon:
+          type: string
+        onTap:
+          type: string
+      required:
+        - id
+        - label
+        - icon
+        - onTap
+
+

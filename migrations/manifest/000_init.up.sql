@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS manifest
     author_name     TEXT        NOT NULL, -- Sergey K.
     author_email    TEXT        NOT NULL, -- sergey@example.com
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    meta_created_at TIMESTAMPTZ NOT NULL  -- из JSON.meta.createdAt
+    meta_created_at TIMESTAMPTZ NOT NULL, -- из JSON.meta.createdAt
+    signature       TEXT        NOT NULL  -- Base64-Ed25519 от ui+script
 );
 
 CREATE INDEX IF NOT EXISTS idx_manifest_category
@@ -19,10 +20,10 @@ CREATE INDEX IF NOT EXISTS idx_manifest_tags
 
 CREATE TABLE IF NOT EXISTS manifest_localizations
 (
-    manifest_id UUID  NOT NULL REFERENCES manifest (id) ON DELETE CASCADE,
-    locale      TEXT  NOT NULL,
-    key         TEXT  NOT NULL,
-    value       TEXT  NOT NULL,
+    manifest_id UUID NOT NULL REFERENCES manifest (id) ON DELETE CASCADE,
+    locale      TEXT NOT NULL,
+    key         TEXT NOT NULL,
+    value       TEXT NOT NULL,
     PRIMARY KEY (manifest_id, locale, key)
 );
 
@@ -36,8 +37,7 @@ CREATE TABLE IF NOT EXISTS manifest_content
     ui          JSONB  NOT NULL, -- { layout:…, components:… }
     script      TEXT   NOT NULL, -- весь JS-код
     actions     JSONB  NOT NULL, -- [ { id, label, icon, onTap }, … ]
-    permissions TEXT[] NOT NULL, -- ARRAY['clipboard.write', 'share', …]
-    signature   TEXT   NOT NULL  -- Base64-Ed25519 от ui+script
+    permissions TEXT[] NOT NULL  -- ARRAY['clipboard.write', 'share', …]
 );
 
 CREATE INDEX IF NOT EXISTS idx_manifest_content_ui

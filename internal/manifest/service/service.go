@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/google/uuid"
 
 	"pluto-backend/internal/manifest/repository"
 )
@@ -19,7 +20,7 @@ func (s *Service) ListManifests(ctx context.Context, limit, offset int32, locale
 	return s.repo.ListManifests(ctx, params)
 }
 
-func (s *Service) SearchManifests(ctx context.Context, search string, locale string) ([]repository.Manifest, error) {
+func (s *Service) SearchManifests(ctx context.Context, search string, locale string) ([]repository.SearchManifestsRow, error) {
 	params := repository.SearchManifestsParams{Search: search, Locale: locale}
 	return s.repo.SearchManifests(ctx, params)
 }
@@ -27,4 +28,9 @@ func (s *Service) SearchManifests(ctx context.Context, search string, locale str
 func (s *Service) SearchManifestsFTS(ctx context.Context, query string, locale string, config string) ([]repository.SearchManifestsFTSRow, error) {
 	params := repository.SearchManifestsFTSParams{Query: query, Locale: locale, Config: config}
 	return s.repo.SearchManifestsFTS(ctx, params)
+}
+
+func (s *Service) GetManifestById(ctx context.Context, id uuid.UUID, locale string) (repository.GetManifestRow, error) {
+	params := repository.GetManifestParams{ManifestID: id, Locale: locale}
+	return s.repo.GetManifest(ctx, params)
 }

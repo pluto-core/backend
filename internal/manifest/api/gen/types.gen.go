@@ -4,15 +4,44 @@
 package gen
 
 import (
+	"encoding/json"
 	"time"
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Author defines model for Author.
+type Author struct {
+	Email string `json:"email"`
+	Name  string `json:"name"`
+}
+
+// Manifest defines model for Manifest.
+type Manifest struct {
+	Actions *json.RawMessage `json:"actions,omitempty"`
+
+	// Localization Локализованные строки интерфейса для выбранной локали
+	Localization ManifestLocalization `json:"localization"`
+	Meta         ManifestMeta         `json:"meta"`
+	Permissions  []string             `json:"permissions"`
+	Script       ManifestScript       `json:"script"`
+
+	// Signature Base64-Ed25519 signature
+	Signature *string `json:"signature,omitempty"`
+
+	// Ui Конфигурация пользовательского интерфейса (layout + список компонентов)
+	Ui ManifestUi `json:"ui"`
+}
+
+// ManifestAction defines model for ManifestAction.
+type ManifestAction = json.RawMessage
+
+// ManifestLocalization Локализованные строки интерфейса для выбранной локали
+type ManifestLocalization = json.RawMessage
+
 // ManifestMeta defines model for ManifestMeta.
 type ManifestMeta struct {
-	AuthorEmail   string             `json:"author_email"`
-	AuthorName    string             `json:"author_name"`
+	Author        Author             `json:"author"`
 	Category      string             `json:"category"`
 	CreatedAt     time.Time          `json:"created_at"`
 	Description   string             `json:"description"`
@@ -23,6 +52,12 @@ type ManifestMeta struct {
 	Title         string             `json:"title"`
 	Version       string             `json:"version"`
 }
+
+// ManifestScript defines model for ManifestScript.
+type ManifestScript = json.RawMessage
+
+// ManifestUi Конфигурация пользовательского интерфейса (layout + список компонентов)
+type ManifestUi = json.RawMessage
 
 // ListManifestsParams defines parameters for ListManifests.
 type ListManifestsParams struct {

@@ -84,3 +84,35 @@ WHERE to_tsvector(sqlc.arg(config)::regconfig,
       )
           @@ plainto_tsquery(sqlc.arg(config)::regconfig, sqlc.arg(query)::text)
 ORDER BY m.created_at DESC;
+
+-- name: GetManifest :one
+WITH localization AS (
+    SELECT
+        ml.manifest_id,
+        json_object_agg(ml.key, ml.value) AS localization
+    FROM manifest_localizations ml
+    WHERE ml.locale = sqlc.arg(locale)::text
+    GROUP BY ml.manifest_id
+)
+SELECT
+    m.id,
+    m.version,
+    m.icon,
+    m.category,
+    m.tags,
+    m.author_name,
+    m.author_email,
+    m.created_at,
+    m.meta_created_at,
+    m.signature,
+    mc.ui AS U_I,
+    mc.script,
+    mc.actions,
+    mc.permissions,
+    l.localization,
+    l.localization ->> 'title'       AS title,
+    l.localization ->> 'description' AS description
+FROM manifest m
+         LEFT JOIN manifest_content mc ON mc.manifest_id = m.id
+         LEFT JOIN localization l ON l.manifest_id = m.id
+WHERE m.id = sqlc.arg(manifest_id)::uuid;

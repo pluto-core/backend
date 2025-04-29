@@ -3,7 +3,7 @@
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.53">
     <root id="1">
       <DateStyle>mdy</DateStyle>
-      <IntrospectionStateNumber>941</IntrospectionStateNumber>
+      <IntrospectionStateNumber>950</IntrospectionStateNumber>
       <ServerVersion>17.4</ServerVersion>
       <StartupTime>1745854574</StartupTime>
       <TimeZones>true ACDT
@@ -1400,8 +1400,8 @@ true posixrules
 13219||10|C|G
 13219||-9223372036854775808|U|G
 13219||10|U|G</Grants>
-      <IntrospectionStateNumber>941</IntrospectionStateNumber>
-      <ObjectId>16908</ObjectId>
+      <IntrospectionStateNumber>950</IntrospectionStateNumber>
+      <ObjectId>16956</ObjectId>
       <OwnerName>user</OwnerName>
     </database>
     <database id="3" parent="1" name="postgres">
@@ -1415,7 +1415,7 @@ true posixrules
 13219||10|C|G
 13219||-9223372036854775808|U|G
 13219||10|U|G</Grants>
-      <IntrospectionStateNumber>911</IntrospectionStateNumber>
+      <IntrospectionStateNumber>945</IntrospectionStateNumber>
       <ObjectId>5</ObjectId>
       <OwnerName>user</OwnerName>
     </database>
@@ -4837,82 +4837,82 @@ true posixrules
     <schema id="265" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>941</IntrospectionStateNumber>
-      <LastIntrospectionLocalTimestamp>2025-04-28.20:33:36</LastIntrospectionLocalTimestamp>
+      <IntrospectionStateNumber>950</IntrospectionStateNumber>
+      <LastIntrospectionLocalTimestamp>2025-04-28.22:39:23</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>532</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
     </schema>
     <table id="266" parent="265" name="manifest">
-      <ObjectId>16916</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>16964</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>user</OwnerName>
     </table>
     <table id="267" parent="265" name="manifest_content">
-      <ObjectId>16939</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>16987</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>user</OwnerName>
     </table>
     <table id="268" parent="265" name="manifest_localizations">
-      <ObjectId>16926</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>16974</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>user</OwnerName>
     </table>
     <table id="269" parent="265" name="schema_migrations">
-      <ObjectId>16909</ObjectId>
-      <StateNumber>915</StateNumber>
+      <ObjectId>16957</ObjectId>
+      <StateNumber>949</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>user</OwnerName>
     </table>
     <column id="270" parent="266" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>uuid|0s</StoredType>
       <TypeId>2950</TypeId>
     </column>
     <column id="271" parent="266" name="version">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="272" parent="266" name="icon">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="273" parent="266" name="category">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="274" parent="266" name="tags">
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text[]|0s</StoredType>
       <TypeId>1009</TypeId>
     </column>
     <column id="275" parent="266" name="author_name">
       <NotNull>1</NotNull>
       <Position>6</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="276" parent="266" name="author_email">
       <NotNull>1</NotNull>
       <Position>7</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
@@ -4920,127 +4920,127 @@ true posixrules
       <DefaultExpression>now()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>timestamp with time zone|0s</StoredType>
       <TypeId>1184</TypeId>
     </column>
     <column id="278" parent="266" name="meta_created_at">
       <NotNull>1</NotNull>
       <Position>9</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>timestamp with time zone|0s</StoredType>
       <TypeId>1184</TypeId>
     </column>
-    <index id="279" parent="266" name="manifest_pkey">
+    <column id="279" parent="266" name="signature">
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+      <StateNumber>948</StateNumber>
+      <StoredType>text|0s</StoredType>
+      <TypeId>25</TypeId>
+    </column>
+    <index id="280" parent="266" name="manifest_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16922</ObjectId>
+      <ObjectId>16970</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="280" parent="266" name="idx_manifest_category">
+    <index id="281" parent="266" name="idx_manifest_category">
       <ColNames>category</ColNames>
-      <ObjectId>16924</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>16972</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="281" parent="266" name="idx_manifest_tags">
+    <index id="282" parent="266" name="idx_manifest_tags">
       <ColNames>tags</ColNames>
-      <ObjectId>16925</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>16973</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>2742</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="282" parent="266" name="manifest_pkey">
+    <key id="283" parent="266" name="manifest_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16923</ObjectId>
+      <ObjectId>16971</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>914</StateNumber>
-      <UnderlyingIndexId>16922</UnderlyingIndexId>
+      <StateNumber>948</StateNumber>
+      <UnderlyingIndexId>16970</UnderlyingIndexId>
     </key>
-    <column id="283" parent="267" name="manifest_id">
+    <column id="284" parent="267" name="manifest_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>uuid|0s</StoredType>
       <TypeId>2950</TypeId>
     </column>
-    <column id="284" parent="267" name="ui">
+    <column id="285" parent="267" name="ui">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>jsonb|0s</StoredType>
       <TypeId>3802</TypeId>
     </column>
-    <column id="285" parent="267" name="script">
+    <column id="286" parent="267" name="script">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="286" parent="267" name="actions">
+    <column id="287" parent="267" name="actions">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>jsonb|0s</StoredType>
       <TypeId>3802</TypeId>
     </column>
-    <column id="287" parent="267" name="permissions">
+    <column id="288" parent="267" name="permissions">
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text[]|0s</StoredType>
       <TypeId>1009</TypeId>
-    </column>
-    <column id="288" parent="267" name="signature">
-      <NotNull>1</NotNull>
-      <Position>6</Position>
-      <StateNumber>914</StateNumber>
-      <StoredType>text|0s</StoredType>
-      <TypeId>25</TypeId>
     </column>
     <foreign-key id="289" parent="267" name="manifest_content_manifest_id_fkey">
       <ColNames>manifest_id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16946</ObjectId>
+      <ObjectId>16994</ObjectId>
       <OnDelete>cascade</OnDelete>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16916</RefTableId>
+      <RefTableId>16964</RefTableId>
     </foreign-key>
     <index id="290" parent="267" name="manifest_content_pkey">
       <ColNames>manifest_id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16944</ObjectId>
+      <ObjectId>16992</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
     <index id="291" parent="267" name="idx_manifest_content_ui">
       <ColNames>ui</ColNames>
-      <ObjectId>16951</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>16999</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>2742</AccessMethodId>
     </index>
     <index id="292" parent="267" name="idx_manifest_content_actions">
       <ColNames>actions</ColNames>
-      <ObjectId>16952</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>17000</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>2742</AccessMethodId>
     </index>
     <index id="293" parent="267" name="idx_manifest_content_permissions">
       <ColNames>permissions</ColNames>
-      <ObjectId>16953</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>17001</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>2742</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
@@ -5048,56 +5048,56 @@ true posixrules
     </index>
     <key id="294" parent="267" name="manifest_content_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16945</ObjectId>
+      <ObjectId>16993</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>914</StateNumber>
-      <UnderlyingIndexId>16944</UnderlyingIndexId>
+      <StateNumber>948</StateNumber>
+      <UnderlyingIndexId>16992</UnderlyingIndexId>
     </key>
     <column id="295" parent="268" name="manifest_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>uuid|0s</StoredType>
       <TypeId>2950</TypeId>
     </column>
     <column id="296" parent="268" name="locale">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="297" parent="268" name="key">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <column id="298" parent="268" name="value">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
     <foreign-key id="299" parent="268" name="manifest_localizations_manifest_id_fkey">
       <ColNames>manifest_id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16933</ObjectId>
+      <ObjectId>16981</ObjectId>
       <OnDelete>cascade</OnDelete>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
-      <RefTableId>16916</RefTableId>
+      <RefTableId>16964</RefTableId>
     </foreign-key>
     <index id="300" parent="268" name="manifest_localizations_pkey">
       <ColNames>manifest_id
 locale
 key</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16931</ObjectId>
+      <ObjectId>16979</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>914</StateNumber>
+      <StateNumber>948</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationIds>
@@ -5113,8 +5113,8 @@ pg_catalog</CollationParentNames>
     <index id="301" parent="268" name="idx_key_manifest_locale">
       <ColNames>manifest_id
 locale</ColNames>
-      <ObjectId>16938</ObjectId>
-      <StateNumber>914</StateNumber>
+      <ObjectId>16986</ObjectId>
+      <StateNumber>948</StateNumber>
       <AccessMethodId>403</AccessMethodId>
       <CollationIds>
 100</CollationIds>
@@ -5125,40 +5125,40 @@ default</CollationNames>
     </index>
     <key id="302" parent="268" name="manifest_localizations_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16932</ObjectId>
+      <ObjectId>16980</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>914</StateNumber>
-      <UnderlyingIndexId>16931</UnderlyingIndexId>
+      <StateNumber>948</StateNumber>
+      <UnderlyingIndexId>16979</UnderlyingIndexId>
     </key>
     <column id="303" parent="269" name="version">
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>912</StateNumber>
+      <StateNumber>946</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <TypeId>20</TypeId>
     </column>
     <column id="304" parent="269" name="dirty">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>912</StateNumber>
+      <StateNumber>946</StateNumber>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
     <index id="305" parent="269" name="schema_migrations_pkey">
       <ColNames>version</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16912</ObjectId>
+      <ObjectId>16960</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>915</StateNumber>
+      <StateNumber>949</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
     <key id="306" parent="269" name="schema_migrations_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16913</ObjectId>
+      <ObjectId>16961</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>912</StateNumber>
-      <UnderlyingIndexId>16912</UnderlyingIndexId>
+      <StateNumber>946</StateNumber>
+      <UnderlyingIndexId>16960</UnderlyingIndexId>
     </key>
   </database-model>
 </dataSource>

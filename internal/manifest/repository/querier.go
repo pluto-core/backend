@@ -9,8 +9,9 @@ import (
 )
 
 type Querier interface {
+	GetManifest(ctx context.Context, arg GetManifestParams) (GetManifestRow, error)
 	ListManifests(ctx context.Context, arg ListManifestsParams) ([]ListManifestsRow, error)
-	SearchManifests(ctx context.Context, arg SearchManifestsParams) ([]Manifest, error)
+	SearchManifests(ctx context.Context, arg SearchManifestsParams) ([]SearchManifestsRow, error)
 	SearchManifestsFTS(ctx context.Context, arg SearchManifestsFTSParams) ([]SearchManifestsFTSRow, error)
 }
 

@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // ServerInterface represents all server handlers.
@@ -19,6 +20,9 @@ type ServerInterface interface {
 
 	// (GET /api/manifests/search)
 	GetManifestsBySearch(w http.ResponseWriter, r *http.Request, params GetManifestsBySearchParams)
+
+	// (GET /api/manifests/{id})
+	GetManifestById(w http.ResponseWriter, r *http.Request, id openapi_types.UUID)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
@@ -32,6 +36,11 @@ func (_ Unimplemented) ListManifests(w http.ResponseWriter, r *http.Request, par
 
 // (GET /api/manifests/search)
 func (_ Unimplemented) GetManifestsBySearch(w http.ResponseWriter, r *http.Request, params GetManifestsBySearchParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /api/manifests/{id})
+func (_ Unimplemented) GetManifestById(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -127,6 +136,32 @@ func (siw *ServerInterfaceWrapper) GetManifestsBySearch(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetManifestsBySearch(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetManifestById operation middleware
+func (siw *ServerInterfaceWrapper) GetManifestById(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, chi.URLParam(r, "id"), &id)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetManifestById(w, r, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -254,6 +289,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/manifests/search", wrapper.GetManifestsBySearch)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/manifests/{id}", wrapper.GetManifestById)
 	})
 
 	return r
