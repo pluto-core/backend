@@ -2,155 +2,148 @@ openapi: 3.0.1
 info:
   title: Pluto Manifest API
   version: 1.0.0
+
+#servers:
+#  - url: https://api.example.com
+
 paths:
   /api/manifests:
     get:
+      summary: Список манифестов (только meta)
       operationId: listManifests
       parameters:
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-            default: 100
-        - name: offset
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-            default: 0
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
       responses:
-        "200":
-          description: OK
+        '200':
+          description: Массив метаданных манифестов
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ManifestMeta"
+                  $ref: '#/components/schemas/ManifestMeta'
+    post:
+      summary: Создать новый манифест
+      operationId: createManifest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManifestCreate'
+      responses:
+        '201':
+          description: Полный манифест
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manifest'
+
   /api/manifests/search:
     get:
-      operationId: GetManifestsBySearch
+      summary: Поиск манифестов (только meta)
+      operationId: searchManifests
       parameters:
         - name: query
           in: query
           required: true
           schema:
             type: string
-        - name: Accept-Language
-          in: header
-          required: false
-          schema:
-            type: string
-            example: "en-US"
+        - $ref: '#/components/parameters/acceptLanguage'
       responses:
-        "200":
-          description: OK
+        '200':
+          description: Массив метаданных манифестов
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ManifestMeta"
-  /api/manifests/{id}:
-    get:
-      operationId: GetManifestById
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Manifest"
+                  $ref: '#/components/schemas/ManifestMeta'
 
-        "404":
-          description: Not Found
+  /api/manifests/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      summary: Получить полный манифест по ID
+      operationId: getManifestById
+      responses:
+        '200':
+          description: Полный манифест
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Manifest not found"
+                $ref: '#/components/schemas/Manifest'
+        '404':
+          $ref: '#/components/responses/notFound'
+    patch:
+      summary: Частичное обновление манифеста
+      operationId: updateManifest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManifestUpdate'
+      responses:
+        '200':
+          description: Обновлённый полный манифест
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manifest'
+        '404':
+          $ref: '#/components/responses/notFound'
+
 components:
+
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 100
+
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+
+    acceptLanguage:
+      name: Accept-Language
+      in: header
+      schema:
+        type: string
+        example: en-US
+
+  responses:
+    notFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Manifest not found
+
   schemas:
-    Manifest:
-      type: object
-      properties:
-        meta:
-          $ref: '#/components/schemas/ManifestMeta'
-        localization:
-          $ref: '#/components/schemas/ManifestLocalization'
-        ui:
-          $ref: '#/components/schemas/ManifestUi'
-        script:
-          $ref: '#/components/schemas/ManifestScript'
-        actions:
-          type: array
-          x-go-type: "json.RawMessage"
-          x-go-import: "encoding/json"
-          items:
-            $ref: '#/components/schemas/ManifestAction'
-        permissions:
-          type: array
-          items:
-            type: string
-        signature:
-          type: string
-          description: Base64-Ed25519 signature
-      required:
-        - meta
-        - localization
-        - ui
-        - script
-        - permissions
-    ManifestMeta:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        title:
-          type: string
-        description:
-          type: string
-        version:
-          type: string
-        icon:
-          type: string
-        category:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-        author:
-          $ref: '#/components/schemas/Author'
-        created_at:
-          type: string
-          format: date-time
-        meta_created_at:
-          type: string
-          format: date-time
-      required:
-        - id
-        - title
-        - description
-        - version
-        - icon
-        - category
-        - tags
-        - author
-        - created_at
-        - meta_created_at
+
+    # ——— низкоуровневые куски для Swagger UI ——————————————————
 
     Author:
       type: object
@@ -159,47 +152,33 @@ components:
           type: string
         email:
           type: string
-      required:
-        - name
-        - email
+      required: [name, email]
 
-    ManifestLocalization:
+    ManifestLocalizationBase:
       type: object
-      x-go-type: "json.RawMessage"
-      x-go-import: "encoding/json"
-      description: Локализованные строки интерфейса для выбранной локали
+      description: Локализованные строки интерфейса
       additionalProperties:
         type: string
-
-    ManifestUi:
-      type: object
       x-go-type: "json.RawMessage"
       x-go-import: "encoding/json"
-      description: Конфигурация пользовательского интерфейса (layout + список компонентов)
+
+    ManifestUiBase:
+      type: object
+      description: Конфигурация пользовательского интерфейса
       properties:
         layout:
           type: object
           properties:
-            type:
-              type: string
-              description: Тип раскладки (например, "column", "row")
-            spacing:
-              type: integer
-              description: Расстояние (пиксели) между элементами
+            type:    { type: string }
+            spacing: { type: integer }
             children:
               type: array
               items:
                 type: object
                 properties:
-                  "$ref":
-                    type: string
-                    description: ID компонента
-                required:
-                  - "$ref"
-          required:
-            - type
-            - spacing
-            - children
+                  "$ref": { type: string }
+                required: ["$ref"]
+          required: [type, spacing, children]
         components:
           type: array
           items:
@@ -219,33 +198,24 @@ components:
                   properties:
                     onTap:
                       type: string
-                  required:
-                    - onTap
-            required:
-              - id
-              - type
-              - props
-      required:
-        - layout
-        - components
-
-    ManifestScript:
-      type: object
+                  required: [onTap]
+            required: [id, type, props]
+      required: [layout, components]
       x-go-type: "json.RawMessage"
       x-go-import: "encoding/json"
+
+    ManifestScriptBase:
+      type: object
       properties:
         code:
           type: string
-          description: |
-            JavaScript-код, выполняемый в клиенте. Включает в себя
-            библиотеку forge и функции encrypt, copyCipher, shareCipher.
-      required:
-        - code
-
-    ManifestAction:
-      type: object
+          description: JS-код плагина
+      required: [code]
       x-go-type: "json.RawMessage"
       x-go-import: "encoding/json"
+
+    ManifestActionBase:
+      type: object
       properties:
         id:
           type: string
@@ -255,10 +225,166 @@ components:
           type: string
         onTap:
           type: string
+      required: [id, label, icon, onTap]
+      x-go-type: "json.RawMessage"
+      x-go-import: "encoding/json"
+
+    # ——— общая база для Create/Update ——————————————————————
+
+    ManifestBase:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        category:
+          type: string
+        tags:
+          type: array
+          items: { type: string }
+        author:
+          $ref: '#/components/schemas/Author'
+        localization:
+          $ref: '#/components/schemas/ManifestLocalizationBase'
+        ui:
+          $ref: '#/components/schemas/ManifestUiBase'
+        script:
+          $ref: '#/components/schemas/ManifestScriptBase'
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManifestActionBase'
+        permissions:
+          type: array
+          items: { type: string }
+      required:
+        - title
+        - description
+        - icon
+        - category
+        - tags
+        - author
+        - localization
+        - ui
+        - script
+        - permissions
+
+    ManifestCreate:
+      allOf:
+        - $ref: '#/components/schemas/ManifestBase'
+
+    ManifestUpdate:
+      allOf:
+        - $ref: '#/components/schemas/ManifestBase'
+      # PATCH: все поля опциональны
+
+    # ——— RAW alias-схемы для Go (json.RawMessage) ——————————————————
+
+    ManifestLocalization:
+      allOf:
+        - $ref: '#/components/schemas/ManifestLocalizationBase'
+      x-go-type:   "json.RawMessage"
+      x-go-import: "encoding/json"
+
+    ManifestUi:
+      allOf:
+        - $ref: '#/components/schemas/ManifestUiBase'
+      x-go-type:   "json.RawMessage"
+      x-go-import: "encoding/json"
+
+    ManifestScript:
+      allOf:
+        - $ref: '#/components/schemas/ManifestScriptBase'
+      x-go-type:   "json.RawMessage"
+      x-go-import: "encoding/json"
+
+    ManifestAction:
+      allOf:
+        - $ref: '#/components/schemas/ManifestActionBase'
+      x-go-type:   "json.RawMessage"
+      x-go-import: "encoding/json"
+
+    # ——— Метаданные ——————————————————————————————————————
+
+    ManifestMeta:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        version:
+          type: string
+          readOnly: true
+        icon:
+          type: string
+          readOnly: true
+        category:
+          type: string
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        author:
+          $ref: '#/components/schemas/Author'
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        metaCreatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
       required:
         - id
-        - label
+        - version
         - icon
-        - onTap
+        - category
+        - tags
+        - author
+        - createdAt
+        - metaCreatedAt
+        - title
+        - description
 
+    # ——— Полная модель ответа —————————————————————————————————
 
+    Manifest:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/ManifestMeta'
+        localization:
+          $ref: '#/components/schemas/ManifestLocalization'
+        ui:
+          $ref: '#/components/schemas/ManifestUi'
+        script:
+          $ref: '#/components/schemas/ManifestScript'
+        actions:
+          $ref: '#/components/schemas/ManifestAction'
+        permissions:
+          type: array
+          items:
+            type: string
+        signature:
+          type: string
+          readOnly: true
+      required:
+        - meta
+        - localization
+        - ui
+        - script
+        - actions
+        - permissions

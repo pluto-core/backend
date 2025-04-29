@@ -9,38 +9,58 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/oapi-codegen/runtime"
-	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-
+	// Список манифестов (только meta)
 	// (GET /api/manifests)
 	ListManifests(w http.ResponseWriter, r *http.Request, params ListManifestsParams)
-
+	// Создать новый манифест
+	// (POST /api/manifests)
+	CreateManifest(w http.ResponseWriter, r *http.Request)
+	// Поиск манифестов (только meta)
 	// (GET /api/manifests/search)
-	GetManifestsBySearch(w http.ResponseWriter, r *http.Request, params GetManifestsBySearchParams)
-
+	SearchManifests(w http.ResponseWriter, r *http.Request, params SearchManifestsParams)
+	// Получить полный манифест по ID
 	// (GET /api/manifests/{id})
-	GetManifestById(w http.ResponseWriter, r *http.Request, id openapi_types.UUID)
+	GetManifestById(w http.ResponseWriter, r *http.Request, id Id)
+	// Частичное обновление манифеста
+	// (PATCH /api/manifests/{id})
+	UpdateManifest(w http.ResponseWriter, r *http.Request, id Id)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
 
 type Unimplemented struct{}
 
+// Список манифестов (только meta)
 // (GET /api/manifests)
 func (_ Unimplemented) ListManifests(w http.ResponseWriter, r *http.Request, params ListManifestsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /api/manifests/search)
-func (_ Unimplemented) GetManifestsBySearch(w http.ResponseWriter, r *http.Request, params GetManifestsBySearchParams) {
+// Создать новый манифест
+// (POST /api/manifests)
+func (_ Unimplemented) CreateManifest(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// Поиск манифестов (только meta)
+// (GET /api/manifests/search)
+func (_ Unimplemented) SearchManifests(w http.ResponseWriter, r *http.Request, params SearchManifestsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Получить полный манифест по ID
 // (GET /api/manifests/{id})
-func (_ Unimplemented) GetManifestById(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {
+func (_ Unimplemented) GetManifestById(w http.ResponseWriter, r *http.Request, id Id) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Частичное обновление манифеста
+// (PATCH /api/manifests/{id})
+func (_ Unimplemented) UpdateManifest(w http.ResponseWriter, r *http.Request, id Id) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -89,14 +109,29 @@ func (siw *ServerInterfaceWrapper) ListManifests(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
-// GetManifestsBySearch operation middleware
-func (siw *ServerInterfaceWrapper) GetManifestsBySearch(w http.ResponseWriter, r *http.Request) {
+// CreateManifest operation middleware
+func (siw *ServerInterfaceWrapper) CreateManifest(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateManifest(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// SearchManifests operation middleware
+func (siw *ServerInterfaceWrapper) SearchManifests(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetManifestsBySearchParams
+	var params SearchManifestsParams
 
 	// ------------- Required query parameter "query" -------------
 
@@ -117,7 +152,7 @@ func (siw *ServerInterfaceWrapper) GetManifestsBySearch(w http.ResponseWriter, r
 
 	// ------------- Optional header parameter "Accept-Language" -------------
 	if valueList, found := headers[http.CanonicalHeaderKey("Accept-Language")]; found {
-		var AcceptLanguage string
+		var AcceptLanguage AcceptLanguage
 		n := len(valueList)
 		if n != 1 {
 			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Accept-Language", Count: n})
@@ -135,7 +170,7 @@ func (siw *ServerInterfaceWrapper) GetManifestsBySearch(w http.ResponseWriter, r
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetManifestsBySearch(w, r, params)
+		siw.Handler.SearchManifests(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -152,7 +187,34 @@ func (siw *ServerInterfaceWrapper) GetManifestById(w http.ResponseWriter, r *htt
 	var err error
 
 	// ------------- Path parameter "id" -------------
-	var id openapi_types.UUID
+	var id Id
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, chi.URLParam(r, "id"), &id)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		fmt.Println("GOVVV")
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetManifestById(w, r, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// UpdateManifest operation middleware
+func (siw *ServerInterfaceWrapper) UpdateManifest(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id Id
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, chi.URLParam(r, "id"), &id)
 	if err != nil {
@@ -161,7 +223,7 @@ func (siw *ServerInterfaceWrapper) GetManifestById(w http.ResponseWriter, r *htt
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetManifestById(w, r, id)
+		siw.Handler.UpdateManifest(w, r, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -288,10 +350,16 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Get(options.BaseURL+"/api/manifests", wrapper.ListManifests)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/api/manifests/search", wrapper.GetManifestsBySearch)
+		r.Post(options.BaseURL+"/api/manifests", wrapper.CreateManifest)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/manifests/search", wrapper.SearchManifests)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/manifests/{id}", wrapper.GetManifestById)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/manifests/{id}", wrapper.UpdateManifest)
 	})
 
 	return r

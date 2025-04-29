@@ -49,19 +49,19 @@ func (h *Handlers) ListManifests(
 	out := make([]gen.ManifestMeta, len(repos))
 	for i, m := range repos {
 		out[i] = gen.ManifestMeta{
-			Id:       m.ID,
-			Version:  m.Version,
-			Icon:     m.Icon,
-			Category: m.Category,
-			Tags:     m.Tags,
+			Id:       &m.ID,
+			Version:  &m.Version,
+			Icon:     &m.Icon,
+			Category: &m.Category,
+			Tags:     &m.Tags,
 			Author: gen.Author{
 				Email: m.AuthorEmail,
 				Name:  m.AuthorName,
 			},
-			CreatedAt:     m.CreatedAt,
-			MetaCreatedAt: m.MetaCreatedAt,
-			Title:         *toStringPtr(m.Title), // sql.NullString
-			Description:   *toStringPtr(m.Title), // sql.NullString
+			CreatedAt:     &m.CreatedAt,
+			MetaCreatedAt: &m.MetaCreatedAt,
+			Title:         toStringPtr(m.Title), // sql.NullString
+			Description:   toStringPtr(m.Title), // sql.NullString
 		}
 	}
 
@@ -75,10 +75,10 @@ func toStringPtr(ns sql.NullString) *string {
 	return nil
 }
 
-func (h *Handlers) GetManifestsBySearch(
+func (h *Handlers) SearchManifests(
 	w http.ResponseWriter,
 	r *http.Request,
-	params gen.GetManifestsBySearchParams,
+	params gen.SearchManifestsParams,
 ) {
 
 	locale := r.Header.Get("Accept-Language")
@@ -104,21 +104,19 @@ func (h *Handlers) GetManifestsBySearch(
 	out := make([]gen.ManifestMeta, len(repos))
 	for i, m := range repos {
 		out[i] = gen.ManifestMeta{
-			Id:       m.ID,
-			Version:  m.Version,
-			Icon:     m.Icon,
-			Category: m.Category,
-			Tags:     m.Tags,
+			Id:       &m.ID,
+			Version:  &m.Version,
+			Icon:     &m.Icon,
+			Category: &m.Category,
+			Tags:     &m.Tags,
 			Author: gen.Author{
 				Email: m.AuthorEmail,
 				Name:  m.AuthorName,
 			},
-			//AuthorName:    m.AuthorName,
-			//AuthorEmail:   m.AuthorEmail,
-			CreatedAt:     m.CreatedAt,
-			MetaCreatedAt: m.MetaCreatedAt,
-			Title:         *toStringPtr(m.Title),
-			Description:   *toStringPtr(m.Description),
+			CreatedAt:     &m.CreatedAt,
+			MetaCreatedAt: &m.MetaCreatedAt,
+			Title:         toStringPtr(m.Title),
+			Description:   toStringPtr(m.Description),
 		}
 	}
 
@@ -140,36 +138,41 @@ func (h *Handlers) GetManifestById(
 	}
 
 	meta := gen.ManifestMeta{
-		Id:          repo.ID,
-		Title:       nullStringToString(repo.Title),
-		Description: nullStringToString(repo.Description),
+		Id:          &repo.ID,
+		Title:       &repo.Title.String,
+		Description: &repo.Description.String,
 		Author: gen.Author{
 			Email: repo.AuthorEmail,
 			Name:  repo.AuthorName,
 		},
-		CreatedAt: repo.CreatedAt,
-		Version:   repo.Version,
-		Icon:      repo.Icon,
-		Category:  repo.Category,
-		Tags:      repo.Tags,
+		CreatedAt: &repo.CreatedAt,
+		Version:   &repo.Version,
+		Icon:      &repo.Icon,
+		Category:  &repo.Category,
+		Tags:      &repo.Tags,
+	}
+
+	var scriptRaw gen.ManifestScript
+	if repo.Script.Valid {
+		scriptRaw = gen.ManifestScript([]byte(repo.Script.String))
+	} else {
+		scriptRaw = nil
 	}
 
 	out := gen.Manifest{
 		Meta:         meta,
 		Localization: repo.Localization.RawMessage,
 		Ui:           repo.UI.RawMessage,
-		Script:       repo.UI.RawMessage,
+		Script:       scriptRaw,
+		Actions:      repo.Actions.RawMessage,
 		Permissions:  repo.Permissions,
 		Signature:    &repo.Signature,
-		Actions:      &repo.Actions.RawMessage,
 	}
 
-	json.NewEncoder(w).Encode(out)
+	JSON(w, http.StatusOK, out)
 }
 
-func nullStringToString(ns sql.NullString) string {
-	if ns.Valid {
-		return ns.String
-	}
-	return ""
+func (h *Handlers) CreateManifest(w http.ResponseWriter, r *http.Request) {
+
 }
+func (h *Handlers) UpdateManifest(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {}

@@ -18,55 +18,109 @@ type Author struct {
 
 // Manifest defines model for Manifest.
 type Manifest struct {
-	Actions *json.RawMessage `json:"actions,omitempty"`
-
-	// Localization Локализованные строки интерфейса для выбранной локали
+	Actions      ManifestAction       `json:"actions"`
 	Localization ManifestLocalization `json:"localization"`
 	Meta         ManifestMeta         `json:"meta"`
 	Permissions  []string             `json:"permissions"`
 	Script       ManifestScript       `json:"script"`
-
-	// Signature Base64-Ed25519 signature
-	Signature *string `json:"signature,omitempty"`
-
-	// Ui Конфигурация пользовательского интерфейса (layout + список компонентов)
-	Ui ManifestUi `json:"ui"`
+	Signature    *string              `json:"signature,omitempty"`
+	Ui           ManifestUi           `json:"ui"`
 }
 
 // ManifestAction defines model for ManifestAction.
-type ManifestAction = json.RawMessage
+type ManifestAction = ManifestActionBase
 
-// ManifestLocalization Локализованные строки интерфейса для выбранной локали
-type ManifestLocalization = json.RawMessage
+// ManifestActionBase defines model for ManifestActionBase.
+type ManifestActionBase = json.RawMessage
+
+// ManifestBase defines model for ManifestBase.
+type ManifestBase struct {
+	Actions     *[]ManifestActionBase `json:"actions,omitempty"`
+	Author      Author                `json:"author"`
+	Category    string                `json:"category"`
+	Description string                `json:"description"`
+	Icon        string                `json:"icon"`
+
+	// Localization Локализованные строки интерфейса
+	Localization ManifestLocalizationBase `json:"localization"`
+	Permissions  []string                 `json:"permissions"`
+	Script       ManifestScriptBase       `json:"script"`
+	Tags         []string                 `json:"tags"`
+	Title        string                   `json:"title"`
+
+	// Ui Конфигурация пользовательского интерфейса
+	Ui ManifestUiBase `json:"ui"`
+}
+
+// ManifestCreate defines model for ManifestCreate.
+type ManifestCreate = ManifestBase
+
+// ManifestLocalization Локализованные строки интерфейса
+type ManifestLocalization = ManifestLocalizationBase
+
+// ManifestLocalizationBase Локализованные строки интерфейса
+type ManifestLocalizationBase = json.RawMessage
 
 // ManifestMeta defines model for ManifestMeta.
 type ManifestMeta struct {
-	Author        Author             `json:"author"`
-	Category      string             `json:"category"`
-	CreatedAt     time.Time          `json:"created_at"`
-	Description   string             `json:"description"`
-	Icon          string             `json:"icon"`
-	Id            openapi_types.UUID `json:"id"`
-	MetaCreatedAt time.Time          `json:"meta_created_at"`
-	Tags          []string           `json:"tags"`
-	Title         string             `json:"title"`
-	Version       string             `json:"version"`
+	Author        Author              `json:"author"`
+	Category      *string             `json:"category,omitempty"`
+	CreatedAt     *time.Time          `json:"createdAt,omitempty"`
+	Description   *string             `json:"description,omitempty"`
+	Icon          *string             `json:"icon,omitempty"`
+	Id            *openapi_types.UUID `json:"id,omitempty"`
+	MetaCreatedAt *time.Time          `json:"metaCreatedAt,omitempty"`
+	Tags          *[]string           `json:"tags,omitempty"`
+	Title         *string             `json:"title,omitempty"`
+	Version       *string             `json:"version,omitempty"`
 }
 
 // ManifestScript defines model for ManifestScript.
-type ManifestScript = json.RawMessage
+type ManifestScript = ManifestScriptBase
 
-// ManifestUi Конфигурация пользовательского интерфейса (layout + список компонентов)
-type ManifestUi = json.RawMessage
+// ManifestScriptBase defines model for ManifestScriptBase.
+type ManifestScriptBase = json.RawMessage
+
+// ManifestUi Конфигурация пользовательского интерфейса
+type ManifestUi = ManifestUiBase
+
+// ManifestUiBase Конфигурация пользовательского интерфейса
+type ManifestUiBase = json.RawMessage
+
+// ManifestUpdate defines model for ManifestUpdate.
+type ManifestUpdate = ManifestBase
+
+// AcceptLanguage defines model for acceptLanguage.
+type AcceptLanguage = string
+
+// Id defines model for id.
+type Id = openapi_types.UUID
+
+// Limit defines model for limit.
+type Limit = int
+
+// Offset defines model for offset.
+type Offset = int
+
+// NotFound defines model for notFound.
+type NotFound struct {
+	Error *string `json:"error,omitempty"`
+}
 
 // ListManifestsParams defines parameters for ListManifests.
 type ListManifestsParams struct {
-	Limit  *int `form:"limit,omitempty" json:"limit,omitempty"`
-	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+	Offset *Offset `form:"offset,omitempty" json:"offset,omitempty"`
 }
 
-// GetManifestsBySearchParams defines parameters for GetManifestsBySearch.
-type GetManifestsBySearchParams struct {
-	Query          string  `form:"query" json:"query"`
-	AcceptLanguage *string `json:"Accept-Language,omitempty"`
+// SearchManifestsParams defines parameters for SearchManifests.
+type SearchManifestsParams struct {
+	Query          string          `form:"query" json:"query"`
+	AcceptLanguage *AcceptLanguage `json:"Accept-Language,omitempty"`
 }
+
+// CreateManifestJSONRequestBody defines body for CreateManifest for application/json ContentType.
+type CreateManifestJSONRequestBody = ManifestCreate
+
+// UpdateManifestJSONRequestBody defines body for UpdateManifest for application/json ContentType.
+type UpdateManifestJSONRequestBody = ManifestUpdate

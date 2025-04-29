@@ -5,14 +5,13 @@ import (
 	"github.com/go-chi/chi/v5"
 	middleware "github.com/oapi-codegen/nethttp-middleware"
 	"github.com/rs/zerolog"
-
 	"pluto-backend/internal/manifest/api"
 	"pluto-backend/internal/manifest/api/gen"
 	"pluto-backend/internal/manifest/repository"
 	"pluto-backend/internal/manifest/service"
 	"pluto-backend/internal/platform/config"
 	"pluto-backend/internal/platform/db"
-	"pluto-backend/internal/platform/errors/openapi"
+	"pluto-backend/internal/platform/errors"
 	"pluto-backend/internal/platform/logger"
 	routerpkg "pluto-backend/internal/platform/router"
 	routermw "pluto-backend/internal/platform/router/middleware"
@@ -42,7 +41,7 @@ func RunManifestService(configPath string) error {
 
 	oapiOpts := middleware.Options{
 		Options:              openapi3filter.Options{MultiError: true},
-		ErrorHandlerWithOpts: openapi.ErrorHandlerWithMultiError,
+		ErrorHandlerWithOpts: errors.ErrorHandlerWithMultiError,
 	}
 	r.Use(middleware.OapiRequestValidatorWithOptions(spec, &oapiOpts))
 
@@ -51,6 +50,7 @@ func RunManifestService(configPath string) error {
 		Middlewares: []gen.MiddlewareFunc{
 			routermw.JSONContentType,
 		},
+		ErrorHandlerFunc: errors.ChiErrorHandler,
 	}
 	r.Mount("/", gen.HandlerWithOptions(impl, serverOpts))
 
