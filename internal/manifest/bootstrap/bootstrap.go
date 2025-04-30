@@ -7,7 +7,6 @@ import (
 	"github.com/rs/zerolog"
 	"pluto-backend/internal/manifest/api"
 	"pluto-backend/internal/manifest/api/gen"
-	"pluto-backend/internal/manifest/repository"
 	"pluto-backend/internal/manifest/service"
 	"pluto-backend/internal/platform/config"
 	"pluto-backend/internal/platform/db"
@@ -26,8 +25,7 @@ func RunManifestService(configPath string) error {
 		return logFatalWrap(log, err, "failed to connect to database")
 	}
 
-	repo := repository.New(sqlDB)
-	svc := service.New(repo)
+	svc := service.New(sqlDB)
 
 	impl := api.NewHandlers(svc, log)
 

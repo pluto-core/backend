@@ -40,26 +40,42 @@ type ManifestBase struct {
 	Category    string                `json:"category"`
 	Description string                `json:"description"`
 	Icon        string                `json:"icon"`
-
-	// Localization Локализованные строки интерфейса
-	Localization ManifestLocalizationBase `json:"localization"`
-	Permissions  []string                 `json:"permissions"`
-	Script       ManifestScriptBase       `json:"script"`
-	Tags         []string                 `json:"tags"`
-	Title        string                   `json:"title"`
+	Permissions []string              `json:"permissions"`
+	Script      ManifestScriptBase    `json:"script"`
+	Tags        []string              `json:"tags"`
+	Title       string                `json:"title"`
 
 	// Ui Конфигурация пользовательского интерфейса
 	Ui ManifestUiBase `json:"ui"`
 }
 
 // ManifestCreate defines model for ManifestCreate.
-type ManifestCreate = ManifestBase
+type ManifestCreate struct {
+	Actions      *[]ManifestActionBase      `json:"actions,omitempty"`
+	Author       Author                     `json:"author"`
+	Category     string                     `json:"category"`
+	Description  string                     `json:"description"`
+	Icon         string                     `json:"icon"`
+	Localization ManifestLocalizationCreate `json:"localization"`
+	Permissions  []string                   `json:"permissions"`
+	Script       ManifestScriptBase         `json:"script"`
+	Tags         []string                   `json:"tags"`
+	Title        string                     `json:"title"`
+
+	// Ui Конфигурация пользовательского интерфейса
+	Ui ManifestUiBase `json:"ui"`
+}
 
 // ManifestLocalization Локализованные строки интерфейса
 type ManifestLocalization = ManifestLocalizationBase
 
 // ManifestLocalizationBase Локализованные строки интерфейса
 type ManifestLocalizationBase = json.RawMessage
+
+// ManifestLocalizationCreate defines model for ManifestLocalizationCreate.
+type ManifestLocalizationCreate struct {
+	Strings map[string]map[string]string `json:"strings"`
+}
 
 // ManifestMeta defines model for ManifestMeta.
 type ManifestMeta struct {
@@ -88,7 +104,21 @@ type ManifestUi = ManifestUiBase
 type ManifestUiBase = json.RawMessage
 
 // ManifestUpdate defines model for ManifestUpdate.
-type ManifestUpdate = ManifestBase
+type ManifestUpdate struct {
+	Actions      *[]ManifestActionBase      `json:"actions,omitempty"`
+	Author       Author                     `json:"author"`
+	Category     string                     `json:"category"`
+	Description  string                     `json:"description"`
+	Icon         string                     `json:"icon"`
+	Localization ManifestLocalizationCreate `json:"localization"`
+	Permissions  []string                   `json:"permissions"`
+	Script       ManifestScriptBase         `json:"script"`
+	Tags         []string                   `json:"tags"`
+	Title        string                     `json:"title"`
+
+	// Ui Конфигурация пользовательского интерфейса
+	Ui ManifestUiBase `json:"ui"`
+}
 
 // AcceptLanguage defines model for acceptLanguage.
 type AcceptLanguage = string

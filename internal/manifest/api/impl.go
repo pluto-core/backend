@@ -153,8 +153,17 @@ func (h *Handlers) GetManifestById(
 	}
 
 	var scriptRaw gen.ManifestScript
+
 	if repo.Script.Valid {
-		scriptRaw = gen.ManifestScript([]byte(repo.Script.String))
+		scriptJSON, err := json.Marshal(map[string]string{
+			"code": repo.Script.String,
+		})
+		if err != nil {
+			h.Logger.Error().Err(err).Msg("failed to marshal script object")
+			http.Error(w, "internal error", http.StatusInternalServerError)
+			return
+		}
+		scriptRaw = scriptJSON
 	} else {
 		scriptRaw = nil
 	}
@@ -173,6 +182,31 @@ func (h *Handlers) GetManifestById(
 }
 
 func (h *Handlers) CreateManifest(w http.ResponseWriter, r *http.Request) {
+	var req gen.ManifestCreate
 
+	// ✅ JSON decode + валидация тела
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.Logger.Error().Err(err).Msg("createManifest: failed to decode")
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// ✅ Вызов бизнес-логики
+	id, err := h.Svc.CreateManifest(r.Context(), req)
+	if err != nil {
+		h.Logger.Error().Err(err).Msg("createManifest: service error")
+		http.Error(w, "failed to create manifest", http.StatusInternalServerError)
+		return
+	}
+
+	// ✅ Ответ 201 Created
+	resp := map[string]string{
+		"id": id.String(),
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		h.Logger.Error().Err(err).Msg("createManifest: failed to encode response")
+	}
 }
 func (h *Handlers) UpdateManifest(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {}

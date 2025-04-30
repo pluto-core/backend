@@ -192,7 +192,6 @@ func (siw *ServerInterfaceWrapper) GetManifestById(w http.ResponseWriter, r *htt
 	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, chi.URLParam(r, "id"), &id)
 	if err != nil {
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		fmt.Println("GOVVV")
 		return
 	}
 

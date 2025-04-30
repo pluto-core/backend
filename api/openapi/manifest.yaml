@@ -247,8 +247,6 @@ components:
           items: { type: string }
         author:
           $ref: '#/components/schemas/Author'
-        localization:
-          $ref: '#/components/schemas/ManifestLocalizationBase'
         ui:
           $ref: '#/components/schemas/ManifestUiBase'
         script:
@@ -275,10 +273,20 @@ components:
     ManifestCreate:
       allOf:
         - $ref: '#/components/schemas/ManifestBase'
+        - type: object
+          properties:
+            localization:
+              $ref: '#/components/schemas/ManifestLocalizationCreate'
+          required: [localization]
+
 
     ManifestUpdate:
       allOf:
         - $ref: '#/components/schemas/ManifestBase'
+        - type: object
+          properties:
+            localization:
+              $ref: '#/components/schemas/ManifestLocalizationCreate'
       # PATCH: все поля опциональны
 
     # ——— RAW alias-схемы для Go (json.RawMessage) ——————————————————
@@ -388,3 +396,18 @@ components:
         - script
         - actions
         - permissions
+
+    ManifestLocalizationCreate:
+      type: object
+      properties:
+        strings:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+          example:
+            en:
+              title: "Title"
+              description: "Description"
+      required: [ strings ]

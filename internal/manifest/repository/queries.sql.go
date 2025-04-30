@@ -8,6 +8,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,33 +16,140 @@ import (
 	"github.com/sqlc-dev/pqtype"
 )
 
+const createLocalizations = `-- name: CreateLocalizations :exec
+INSERT INTO manifest_localizations (manifest_id,
+                                    locale,
+                                    key,
+                                    value)
+SELECT $1,
+       unnest($2::text[]),
+       unnest($3::text[]),
+       unnest($4::text[])
+`
+
+type CreateLocalizationsParams struct {
+	ManifestID uuid.UUID
+	Locales    []string
+	Keys       []string
+	Values     []string
+}
+
+func (q *Queries) CreateLocalizations(ctx context.Context, arg CreateLocalizationsParams) error {
+	_, err := q.db.ExecContext(ctx, createLocalizations,
+		arg.ManifestID,
+		pq.Array(arg.Locales),
+		pq.Array(arg.Keys),
+		pq.Array(arg.Values),
+	)
+	return err
+}
+
+const createManifest = `-- name: CreateManifest :one
+INSERT INTO manifest (id,
+                      version,
+                      icon,
+                      category,
+                      tags,
+                      author_name,
+                      author_email,
+                      created_at,
+                      meta_created_at,
+                      signature)
+VALUES ($1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        now(),
+        now(),
+        $8)
+RETURNING id
+`
+
+type CreateManifestParams struct {
+	ID          uuid.UUID
+	Version     string
+	Icon        string
+	Category    string
+	Tags        []string
+	AuthorName  string
+	AuthorEmail string
+	Signature   string
+}
+
+func (q *Queries) CreateManifest(ctx context.Context, arg CreateManifestParams) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, createManifest,
+		arg.ID,
+		arg.Version,
+		arg.Icon,
+		arg.Category,
+		pq.Array(arg.Tags),
+		arg.AuthorName,
+		arg.AuthorEmail,
+		arg.Signature,
+	)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const createManifestContent = `-- name: CreateManifestContent :exec
+INSERT INTO manifest_content (manifest_id,
+                              ui,
+                              script,
+                              actions,
+                              permissions)
+VALUES ($1,
+        $2,
+        $3,
+        $4,
+        $5)
+`
+
+type CreateManifestContentParams struct {
+	ManifestID  uuid.UUID
+	Ui          json.RawMessage
+	Script      string
+	Actions     json.RawMessage
+	Permissions []string
+}
+
+func (q *Queries) CreateManifestContent(ctx context.Context, arg CreateManifestContentParams) error {
+	_, err := q.db.ExecContext(ctx, createManifestContent,
+		arg.ManifestID,
+		arg.Ui,
+		arg.Script,
+		arg.Actions,
+		pq.Array(arg.Permissions),
+	)
+	return err
+}
+
 const getManifest = `-- name: GetManifest :one
-WITH localization AS (
-    SELECT
-        ml.manifest_id,
-        json_object_agg(ml.key, ml.value) AS localization
-    FROM manifest_localizations ml
-    WHERE ml.locale = $2::text
-    GROUP BY ml.manifest_id
-)
-SELECT
-    m.id,
-    m.version,
-    m.icon,
-    m.category,
-    m.tags,
-    m.author_name,
-    m.author_email,
-    m.created_at,
-    m.meta_created_at,
-    m.signature,
-    mc.ui AS U_I,
-    mc.script,
-    mc.actions,
-    mc.permissions,
-    l.localization,
-    l.localization ->> 'title'       AS title,
-    l.localization ->> 'description' AS description
+WITH localization AS (SELECT ml.manifest_id,
+                             json_object_agg(ml.key, ml.value) AS localization
+                      FROM manifest_localizations ml
+                      WHERE ml.locale = $2::text
+                      GROUP BY ml.manifest_id)
+SELECT m.id,
+       m.version,
+       m.icon,
+       m.category,
+       m.tags,
+       m.author_name,
+       m.author_email,
+       m.created_at,
+       m.meta_created_at,
+       m.signature,
+       mc.ui                            AS U_I,
+       mc.script,
+       mc.actions,
+       mc.permissions,
+       l.localization,
+       l.localization ->> 'title'       AS title,
+       l.localization ->> 'description' AS description
 FROM manifest m
          LEFT JOIN manifest_content mc ON mc.manifest_id = m.id
          LEFT JOIN localization l ON l.manifest_id = m.id

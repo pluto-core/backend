@@ -6,9 +6,14 @@ package repository
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
+	CreateLocalizations(ctx context.Context, arg CreateLocalizationsParams) error
+	CreateManifest(ctx context.Context, arg CreateManifestParams) (uuid.UUID, error)
+	CreateManifestContent(ctx context.Context, arg CreateManifestContentParams) error
 	GetManifest(ctx context.Context, arg GetManifestParams) (GetManifestRow, error)
 	ListManifests(ctx context.Context, arg ListManifestsParams) ([]ListManifestsRow, error)
 	SearchManifests(ctx context.Context, arg SearchManifestsParams) ([]SearchManifestsRow, error)

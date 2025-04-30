@@ -5,18 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2c15436-e0fc-43ef-8c03-1f679e0b39cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/internal/manifest/api/respond.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/openapi/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/manifest.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/envoy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/envoy.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/manifest.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/server.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/server.gen.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/api/impl.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/impl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/api/respond.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/respond.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/bootstrap/bootstrap.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/bootstrap/bootstrap.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/platform/errors/errors.go" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/platform/errors/openapi/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/errors/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/querier.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/querier.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/service/service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,9 +148,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Makefile Target.run-manifest" />
+        <item itemvalue="Makefile Target.manifest-db-generate" />
         <item itemvalue="Makefile Target.build" />
         <item itemvalue="Makefile Target.generate" />
-        <item itemvalue="Makefile Target.manifest-db-generate" />
         <item itemvalue="Go Build.go build main.go" />
       </list>
     </recent_temporary>

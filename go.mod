@@ -11,6 +11,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/oapi-codegen/nethttp-middleware v1.1.1
 	github.com/oapi-codegen/runtime v1.1.1
+	github.com/pkg/errors v0.9.1
 	github.com/quic-go/quic-go v0.51.0
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/viper v1.20.1

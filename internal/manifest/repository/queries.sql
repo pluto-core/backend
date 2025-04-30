@@ -86,33 +86,74 @@ WHERE to_tsvector(sqlc.arg(config)::regconfig,
 ORDER BY m.created_at DESC;
 
 -- name: GetManifest :one
-WITH localization AS (
-    SELECT
-        ml.manifest_id,
-        json_object_agg(ml.key, ml.value) AS localization
-    FROM manifest_localizations ml
-    WHERE ml.locale = sqlc.arg(locale)::text
-    GROUP BY ml.manifest_id
-)
-SELECT
-    m.id,
-    m.version,
-    m.icon,
-    m.category,
-    m.tags,
-    m.author_name,
-    m.author_email,
-    m.created_at,
-    m.meta_created_at,
-    m.signature,
-    mc.ui AS U_I,
-    mc.script,
-    mc.actions,
-    mc.permissions,
-    l.localization,
-    l.localization ->> 'title'       AS title,
-    l.localization ->> 'description' AS description
+WITH localization AS (SELECT ml.manifest_id,
+                             json_object_agg(ml.key, ml.value) AS localization
+                      FROM manifest_localizations ml
+                      WHERE ml.locale = sqlc.arg(locale)::text
+                      GROUP BY ml.manifest_id)
+SELECT m.id,
+       m.version,
+       m.icon,
+       m.category,
+       m.tags,
+       m.author_name,
+       m.author_email,
+       m.created_at,
+       m.meta_created_at,
+       m.signature,
+       mc.ui                            AS U_I,
+       mc.script,
+       mc.actions,
+       mc.permissions,
+       l.localization,
+       l.localization ->> 'title'       AS title,
+       l.localization ->> 'description' AS description
 FROM manifest m
          LEFT JOIN manifest_content mc ON mc.manifest_id = m.id
          LEFT JOIN localization l ON l.manifest_id = m.id
 WHERE m.id = sqlc.arg(manifest_id)::uuid;
+
+-- name: CreateManifest :one
+INSERT INTO manifest (id,
+                      version,
+                      icon,
+                      category,
+                      tags,
+                      author_name,
+                      author_email,
+                      created_at,
+                      meta_created_at,
+                      signature)
+VALUES (sqlc.arg(id),
+        sqlc.arg(version),
+        sqlc.arg(icon),
+        sqlc.arg(category),
+        sqlc.arg(tags),
+        sqlc.arg(author_name),
+        sqlc.arg(author_email),
+        now(),
+        now(),
+        sqlc.arg(signature))
+RETURNING id;
+
+-- name: CreateManifestContent :exec
+INSERT INTO manifest_content (manifest_id,
+                              ui,
+                              script,
+                              actions,
+                              permissions)
+VALUES (sqlc.arg(manifest_id),
+        sqlc.arg(ui),
+        sqlc.arg(script),
+        sqlc.arg(actions),
+        sqlc.arg(permissions));
+
+-- name: CreateLocalizations :exec
+INSERT INTO manifest_localizations (manifest_id,
+                                    locale,
+                                    key,
+                                    value)
+SELECT sqlc.arg(manifest_id),
+       unnest(sqlc.arg(locales)::text[]),
+       unnest(sqlc.arg(keys)::text[]),
+       unnest(sqlc.arg(values)::text[]);
