@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	if err := bootstrap.RunManifestService("configs/manifest.yaml"); err != nil {
+	if err := bootstrap.RunManifestService(); err != nil {
 		panic(err)
 	}
 }

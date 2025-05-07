@@ -1,0 +1,74 @@
+# По умолчанию не тянем образы latest
+imagePullPolicy: IfNotPresent
+
+manifest:
+  enabled: true
+  runMigrations: true
+  image:
+    repository: manifest-service
+    tag: dev
+    pullPolicy: IfNotPresent
+  port: 8080
+
+auth:
+  enabled: false  # пока не поднимаем
+
+envoy:
+  enabled: true
+  configFile: envoy.yaml  # имя файла из configs/envoy.yaml
+  port: 10000
+
+swaggerui:
+  enabled: true
+  image:
+    repository: swaggerapi/swagger-ui
+    tag: "v5.20.2"
+  port: 8081
+  # URL до OpenAPI-спецификации manifest-сервиса
+  openapiUrl: http://pluto-backend-manifest:8080/api/openapi.json
+
+postgresql:
+  auth:
+    postgresUser: postgres
+    postgresPassword: 6U8jRTyImb
+    database: pluto
+  primary:
+    persistence:
+      enabled: false  # для локального теста без PV
+
+
+migration:
+  enabled: true               # включить/отключить запуск Job
+  image:
+    repository: manifest-service
+    tag: dev
+    pullPolicy: IfNotPresent
+  # если нужно — можно переопределить команду/аргументы
+  command: ["/usr/local/bin/migrate", "manifest"]
+  # опционально: TTL для автоматического удаления Job
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 3
+  # ресурсы пода джобы
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+
+# Управление ServiceAccount
+serviceAccount:
+  # создавать ли ServiceAccount
+  create: true
+  # имя ServiceAccount; если пусто, будет использоваться шаблон fullname
+  name: ""
+
+autoscaling:
+  enabled: false                   # выключено по-умолчанию
+  minReplicas: 1                   # минимальное число Pod’ов
+  maxReplicas: 5                   # максимальное число Pod’ов
+  targetCPUUtilizationPercentage: 80  # цель по CPU
+
+ingress:
+  enabled: false

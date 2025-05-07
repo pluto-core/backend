@@ -1,0 +1,46 @@
+{{- if .Values.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "pluto-backend.fullname" . }}-migration
+  labels:
+    app: {{ include "pluto-backend.name" . }}
+    component: migration
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+spec:
+  backoffLimit: {{ .Values.migration.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.migration.ttlSecondsAfterFinished }}
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "pluto-backend.serviceAccountName" . }}
+      containers:
+        - name: migrator
+          image: "{{ .Values.migration.image.repository }}:{{ .Values.migration.image.tag }}"
+          imagePullPolicy: {{ .Values.migration.image.pullPolicy }}
+          command: {{ toJson .Values.migration.command }}
+          env:
+            - name: PLUTO_DATABASE_DSN
+              value: {{ printf "postgres://%s:%s@%s-postgresql.%s.svc.cluster.local:5432/%s?sslmode=disable"
+                        (default "postgres" .Values.postgresql.auth.postgresUser)
+                        .Values.postgresql.auth.postgresPassword
+                        .Release.Name .Release.Namespace
+                        .Values.postgresql.auth.database | quote }}
+          resources:
+            requests:
+              cpu: {{ .Values.migration.resources.requests.cpu }}
+              memory: {{ .Values.migration.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.migration.resources.limits.cpu }}
+              memory: {{ .Values.migration.resources.limits.memory }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/manifest.yaml
+              subPath: manifest.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "pluto-backend.fullname" . }}-manifest-config
+{{- end }}

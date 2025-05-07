@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pluto-backend.fullname" . }}-manifest-config
+  labels:
+    app.kubernetes.io/name: {{ include "pluto-backend.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  manifest.yaml: |
+    server:
+      port: {{ .Values.manifest.port }}
+    db:
+      url: {{ printf "postgres://%s:%s@%s-postgresql.%s.svc.cluster.local:5432/%s?sslmode=disable" (default "postgres" .Values.postgresql.auth.postgresUser) .Values.postgresql.auth.postgresPassword .Release.Name .Release.Namespace .Values.postgresql.auth.database | quote }}

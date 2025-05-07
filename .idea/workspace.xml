@@ -5,19 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2c15436-e0fc-43ef-8c03-1f679e0b39cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/files/envoy.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/files/manifest.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/envoy-configmap.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/envoy-deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/envoy-service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/manifest-configmap.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/manifest-deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/manifest-service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/migrate-job.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/swagger-spec-configmap.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/swaggerui-deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/charts/pluto-backend/templates/swaggerui-service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/manifest/service/signer.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/manifest/service/signing.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/openapi/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/manifest.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/manifest-service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/manifest-service/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/migrate/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/migrate/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/envoy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/envoy.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/manifest.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/dockerfiles/manifest.Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/dockerfiles/manifest.Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/nginx/certs/server.crt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/nginx/certs/server.key" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/nginx/conf.d/default.conf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/server.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/server.gen.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/api/impl.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/impl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/api/respond.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/respond.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/bootstrap/bootstrap.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/bootstrap/bootstrap.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/querier.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/querier.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/manifest/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/platform/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/platform/router/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/router/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/build.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +70,12 @@
 }</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
+  &quot;configuredContexts&quot;: [
+    {
+      &quot;name&quot;: &quot;orbstack&quot;,
+      &quot;kubeConfigUrl&quot;: &quot;file:///Users/eyadroshnikov/.kube/config&quot;
+    }
+  ],
   &quot;isMigrated&quot;: true
 }</component>
   <component name="ProjectColorInfo">{
@@ -83,7 +109,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/eyadroshnikov&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/eyadroshnikov/Developer/Pluto/pluto-backend/charts/pluto-backend/files&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
@@ -97,12 +123,15 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/charts/pluto-backend/files" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/charts/pluto-backend/templates" />
       <recent name="$PROJECT_DIR$/internal/platform/errors" />
       <recent name="$PROJECT_DIR$/internal/manifest/api" />
       <recent name="$PROJECT_DIR$/api/auth" />
       <recent name="$PROJECT_DIR$/api/manifest" />
-      <recent name="$PROJECT_DIR$/internal/manifest" />
     </key>
   </component>
   <component name="RunManager" selected="Makefile Target.run-manifest">

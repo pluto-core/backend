@@ -14,7 +14,7 @@ func main() {
 	}
 	svc := os.Args[1]
 	path := "migrations/" + svc
-	m, err := migrate.New("file://"+path, os.Getenv("DATABASE_DSN"))
+	m, err := migrate.New("file://"+path, os.Getenv("PLUTO_DATABASE_DSN"))
 	if err != nil {
 		log.Fatal(err)
 	}

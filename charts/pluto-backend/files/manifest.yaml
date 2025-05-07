@@ -7,21 +7,6 @@ info:
 #  - url: https://api.example.com
 
 paths:
-  /health:
-    get:
-      summary: health check
-      operationId: healthCheck
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "ok"
   /api/public-key:
     get:
       summary: get public key (base64)

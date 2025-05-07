@@ -1,0 +1,10 @@
+apiVersion: v2
+name: pluto-backend
+description: Helm chart for local testing of Pluto backend
+type: application
+version: 0.1.0
+appVersion: "dev"
+dependencies:
+  - name: postgresql
+    version: "16.1.0"
+    repository: "https://charts.bitnami.com/bitnami"

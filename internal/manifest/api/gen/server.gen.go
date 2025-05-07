@@ -28,6 +28,12 @@ type ServerInterface interface {
 	// Частичное обновление манифеста
 	// (PATCH /api/manifests/{id})
 	UpdateManifest(w http.ResponseWriter, r *http.Request, id Id)
+	// get public key (base64)
+	// (GET /api/public-key)
+	GetPublicKey(w http.ResponseWriter, r *http.Request)
+	// health check
+	// (GET /health)
+	HealthCheck(w http.ResponseWriter, r *http.Request)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
@@ -61,6 +67,18 @@ func (_ Unimplemented) GetManifestById(w http.ResponseWriter, r *http.Request, i
 // Частичное обновление манифеста
 // (PATCH /api/manifests/{id})
 func (_ Unimplemented) UpdateManifest(w http.ResponseWriter, r *http.Request, id Id) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// get public key (base64)
+// (GET /api/public-key)
+func (_ Unimplemented) GetPublicKey(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// health check
+// (GET /health)
+func (_ Unimplemented) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -232,6 +250,36 @@ func (siw *ServerInterfaceWrapper) UpdateManifest(w http.ResponseWriter, r *http
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
+// GetPublicKey operation middleware
+func (siw *ServerInterfaceWrapper) GetPublicKey(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPublicKey(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// HealthCheck operation middleware
+func (siw *ServerInterfaceWrapper) HealthCheck(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.HealthCheck(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
 type UnescapedCookieParamError struct {
 	ParamName string
 	Err       error
@@ -359,6 +407,12 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Patch(options.BaseURL+"/api/manifests/{id}", wrapper.UpdateManifest)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public-key", wrapper.GetPublicKey)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/health", wrapper.HealthCheck)
 	})
 
 	return r

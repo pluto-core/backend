@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pluto-backend.fullname" . }}-manifest
+  labels:
+    app: {{ include "pluto-backend.name" . }}
+    component: manifest
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.manifest.port }}
+      targetPort: {{ .Values.manifest.port }}
+      name: http
+  selector:
+    app: {{ include "pluto-backend.name" . }}
+    component: manifest

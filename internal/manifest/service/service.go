@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"pluto-backend/internal/manifest/api/gen"
@@ -15,15 +16,26 @@ type Service struct {
 	repo    repository.Querier
 	rawRepo *repository.Queries
 	db      *sql.DB
+	signer  Signer
 }
 
-func New(db *sql.DB) *Service {
+func New(db *sql.DB, signer Signer) *Service {
 	raw := repository.New(db)
 	return &Service{
 		repo:    raw,
 		rawRepo: raw,
 		db:      db,
+		signer:  signer,
 	}
+}
+
+func (s *Service) GetPublicKey(ctx context.Context) (string, error) {
+	pubKey, _ := s.signer.GetPublicKey()
+	if pubKey == "" {
+		return "", errors.New("public key is empty")
+	}
+	return pubKey, nil
+
 }
 
 func (s *Service) ListManifests(ctx context.Context, limit, offset int32, locale string) ([]repository.ListManifestsRow, error) {
@@ -63,11 +75,7 @@ func (s *Service) CreateManifest(ctx context.Context, req gen.ManifestCreate) (u
 		return uuid.Nil, errors.New("localization 'en' must include 'description'")
 	}
 
-	// подготовка локализаций
-	var locales []string
-	var keys []string
-	var values []string
-
+	var locales, keys, values []string
 	for locale, entries := range req.Localization.Strings {
 		for key, value := range entries {
 			locales = append(locales, locale)
@@ -80,6 +88,20 @@ func (s *Service) CreateManifest(ctx context.Context, req gen.ManifestCreate) (u
 	if err != nil {
 		return uuid.Nil, err
 	}
+
+	// формируем каноническое представление
+	payload, err := buildCanonicalPayload(id, "1.0.0", req, scriptCode)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	fmt.Println(string(payload))
+
+	// подписываем
+	signature, err := s.signer.Sign(payload)
+	if err != nil {
+		return uuid.Nil, err
+	}
+
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return uuid.Nil, err
@@ -96,7 +118,7 @@ func (s *Service) CreateManifest(ctx context.Context, req gen.ManifestCreate) (u
 		Tags:        req.Tags,
 		AuthorName:  req.Author.Name,
 		AuthorEmail: req.Author.Email,
-		Signature:   "req.Signature",
+		Signature:   signature,
 	}); err != nil {
 		return uuid.Nil, err
 	}

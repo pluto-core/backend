@@ -52,10 +52,8 @@ func NewServer(
 	go func() {
 		log.Info().Msgf("⇒ HTTP/3 (QUIC) listening on %s", addr)
 		// nginx всё равно может пробрасывать файлы сертификатов в /etc/ssl/...
-		certFile := cfg.TLS.CertFile
-		keyFile := cfg.TLS.KeyFile
 
-		if err := quicServer.ListenAndServeTLS(certFile, keyFile); err != nil {
+		if err := quicServer.ListenAndServe(); err != nil {
 			log.Fatal().Err(err).Msg("http3 ListenAndServeTLS failed")
 		}
 	}()

@@ -1,3 +1,4 @@
+# charts/pluto-backend/files/envoy.yaml
 static_resources:
   listeners:
     - name: listener_http
@@ -17,36 +18,18 @@ static_resources:
                     - name: backend
                       domains: ["*"]
                       routes:
-                        # Проксируем API-запросы
-                        - match:
-                            prefix: "/api/"
-                          route:
-                            cluster: manifest_service
-                            timeout: 0s
-
-                        # Health-check
-                        - match:
-                            path: "/health"
-                          route:
-                            cluster: manifest_service
-                            timeout: 0s
-
-                        # OpenAPI-файл
-                        - match:
-                            path: "/manifest.yaml"
-                          route:
-                            cluster: swagger_ui
-                            timeout: 0s
-
-                        # Статика Swagger-UI
-                        - match:
-                            prefix: "/"
-                          route:
-                            cluster: swagger_ui
-                            timeout: 0s
-
+                        - match: { prefix: "/api/" }
+                          route: { cluster: manifest_service, timeout: 0s }
+                        - match: { path: "/health" }
+                          route: { cluster: manifest_service, timeout: 0s }
+                        - match: { path: "/manifest.yaml" }
+                          route: { cluster: swagger_ui, timeout: 0s }
+                        - match: { prefix: "/" }
+                          route: { cluster: swagger_ui, timeout: 0s }
                 http_filters:
                   - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": "type.googleapis.com/envoy.extensions.filters.http.router.v3.Router"
 
   clusters:
     - name: manifest_service
@@ -60,7 +43,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: pluto-backend-manifest
+                      address: pluto-pluto-backend-manifest
                       port_value: 8080
 
     - name: swagger_ui
@@ -74,7 +57,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: pluto-backend-swaggerui
+                      address: pluto-pluto-backend-swaggerui
                       port_value: 8081
 
 admin:

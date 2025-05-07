@@ -20,14 +20,27 @@ RUN CGO_ENABLED=0 \
     go build -a -o /out/manifest-service \
       ./cmd/manifest-service
 
+# Build the migrate binary
+RUN CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    go build -a -o /out/migrate \
+      ./cmd/migrate
+
 # ---- Final stage ----
 FROM scratch
 
-# Copy the built binary
+# Скопировали бинарь
 COPY --from=builder /out/manifest-service /usr/local/bin/manifest-service
+COPY --from=builder /out/migrate          /usr/local/bin/migrate
 
-# Runtime user (non-root)
+# Добавляем монтирование конфига на ту же относительную локацию
+COPY --from=builder /src/configs/manifest.yaml /configs/manifest.yaml
+COPY --from=builder /src/migrations /migrations
+
 USER 1001
 
 ENTRYPOINT ["/usr/local/bin/manifest-service"]
+# CMD можно даже убрать, т.к. приложение само открывает configs/manifest.yaml
+
 CMD ["--config", "/etc/manifest.yaml"]

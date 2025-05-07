@@ -1,10 +1,12 @@
 package bootstrap
 
 import (
+	"encoding/base64"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/go-chi/chi/v5"
 	middleware "github.com/oapi-codegen/nethttp-middleware"
 	"github.com/rs/zerolog"
+	"golang.org/x/crypto/ed25519"
 	"pluto-backend/internal/manifest/api"
 	"pluto-backend/internal/manifest/api/gen"
 	"pluto-backend/internal/manifest/service"
@@ -16,8 +18,8 @@ import (
 	routermw "pluto-backend/internal/platform/router/middleware"
 )
 
-func RunManifestService(configPath string) error {
-	cfg := config.Load(configPath)
+func RunManifestService() error {
+	cfg := config.GetConfig()
 	log := logger.New(cfg.Logging)
 
 	sqlDB, err := db.NewDB(cfg.Database)
@@ -25,7 +27,25 @@ func RunManifestService(configPath string) error {
 		return logFatalWrap(log, err, "failed to connect to database")
 	}
 
-	svc := service.New(sqlDB)
+	privKeyBytes, err := base64.StdEncoding.DecodeString(cfg.Signing.PrivateKeyB64)
+	if err != nil {
+		return logFatalWrap(log, err, "invalid signing.privateKey")
+	}
+	pubKeyBytes, err := base64.StdEncoding.DecodeString(cfg.Signing.PublicKeyB64)
+	if err != nil {
+		return logFatalWrap(log, err, "invalid signing.publicKey")
+	}
+	signer := service.NewEd25519Signer(
+		ed25519.PrivateKey(privKeyBytes),
+		ed25519.PublicKey(pubKeyBytes),
+	)
+
+	_, err = signer.Sign([]byte("test"))
+	if err != nil {
+		return logFatalWrap(log, err, "failed to sign test data")
+	}
+
+	svc := service.New(sqlDB, signer)
 
 	impl := api.NewHandlers(svc, log)
 
@@ -34,26 +54,25 @@ func RunManifestService(configPath string) error {
 		return logFatalWrap(log, err, "failed to load swagger spec")
 	}
 
-	r := chi.NewRouter()
-	r.Use(routerpkg.RequestLogger(log))
-
 	oapiOpts := middleware.Options{
 		Options:              openapi3filter.Options{MultiError: true},
 		ErrorHandlerWithOpts: errors.ErrorHandlerWithMultiError,
 	}
+
+	r := chi.NewRouter()
+	r.Use(routerpkg.RequestLogger(log))
 	r.Use(middleware.OapiRequestValidatorWithOptions(spec, &oapiOpts))
+	r.Use(routermw.JSONContentType)
 
 	serverOpts := gen.ChiServerOptions{
-		BaseRouter: r,
-		Middlewares: []gen.MiddlewareFunc{
-			routermw.JSONContentType,
-		},
+		BaseRouter:       r,
 		ErrorHandlerFunc: errors.ChiErrorHandler,
 	}
 	r.Mount("/", gen.HandlerWithOptions(impl, serverOpts))
 
-	srv := routerpkg.NewServer(cfg, log, r)
-	log.Info().Msgf("⇒ Starting manifest-service on %d", cfg.Server.Port)
+	srv := routerpkg.NewServer(*cfg, log, r)
+	log.Info().Msgf("Starting manifest-service on %d", cfg.Server.Port)
+
 	return srv.ListenAndServe()
 }
 

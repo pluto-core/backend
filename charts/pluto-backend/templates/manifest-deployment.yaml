@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pluto-backend.fullname" . }}-manifest
+  labels:
+    app: {{ include "pluto-backend.name" . }}
+    component: manifest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "pluto-backend.name" . }}
+      component: manifest
+  template:
+    metadata:
+      labels:
+        app: {{ include "pluto-backend.name" . }}
+        component: manifest
+    spec:
+      # Поднимаем ConfigMap с manifest.yaml
+      volumes:
+        - name: manifest-config
+          configMap:
+            name: {{ include "pluto-backend.fullname" . }}-manifest-config
+      containers:
+        - name: manifest
+          image: "{{ .Values.manifest.image.repository }}:{{ .Values.manifest.image.tag }}"
+          imagePullPolicy: {{ .Values.manifest.image.pullPolicy }}
+          args:
+            - "--config"
+            - "/etc/manifest.yaml"
+          volumeMounts:
+            - name: manifest-config
+              mountPath: /etc/manifest.yaml
+              subPath: manifest.yaml
+          ports:
+            - containerPort: {{ .Values.manifest.port }}
+          env:
+            - name: PLUTO_DATABASE_DSN
+              value: {{ printf "postgres://%s:%s@%s-postgresql.%s.svc.cluster.local:5432/%s?sslmode=disable" (default "postgres" .Values.postgresql.auth.postgresUser) .Values.postgresql.auth.postgresPassword .Release.Name .Release.Namespace .Values.postgresql.auth.database | quote }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.manifest.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.manifest.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5

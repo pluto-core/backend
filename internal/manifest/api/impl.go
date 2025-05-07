@@ -20,6 +20,31 @@ func NewHandlers(svc *service.Service, log *zerolog.Logger) *Handlers {
 	return &Handlers{Svc: svc, Logger: log}
 }
 
+func (h *Handlers) HealthCheck(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(map[string]string{"status": "ok"}); err != nil {
+		h.Logger.Error().Err(err).Msg("HealthCheck: failed to encode response")
+	}
+}
+
+func (h *Handlers) GetPublicKey(w http.ResponseWriter, r *http.Request) {
+	pubKey, err := h.Svc.GetPublicKey(r.Context())
+	if err != nil {
+		h.Logger.Error().Err(err).Msg("GetPublicKey failed")
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	resp := map[string]string{
+		"public_key": pubKey,
+	}
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		h.Logger.Error().Err(err).Msg("GetPublicKey: failed to encode response")
+	}
+}
+
 func (h *Handlers) ListManifests(
 	w http.ResponseWriter,
 	r *http.Request,
@@ -184,14 +209,12 @@ func (h *Handlers) GetManifestById(
 func (h *Handlers) CreateManifest(w http.ResponseWriter, r *http.Request) {
 	var req gen.ManifestCreate
 
-	// ✅ JSON decode + валидация тела
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.Logger.Error().Err(err).Msg("createManifest: failed to decode")
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	// ✅ Вызов бизнес-логики
 	id, err := h.Svc.CreateManifest(r.Context(), req)
 	if err != nil {
 		h.Logger.Error().Err(err).Msg("createManifest: service error")
@@ -199,11 +222,9 @@ func (h *Handlers) CreateManifest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// ✅ Ответ 201 Created
 	resp := map[string]string{
 		"id": id.String(),
 	}
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		h.Logger.Error().Err(err).Msg("createManifest: failed to encode response")
