@@ -1,10 +1,165 @@
 openapi: 3.0.1
 info:
   title: Pluto Auth API
-  version: 0.1.0
+  description: |
+    Сервис авторизации для выдачи и валидации JWT-токенов по flow client_credentials.
+  version: 1.0.0
+servers:
+  - url: https://auth.pluto.internal
+    description: Внутренний URL Auth-сервиса
 paths:
-  /health:
-    get:
+  /oauth/token:
+    post:
+      tags:
+        - Auth
+      summary: Выдать JWT по client_credentials
+      description: |
+        Клиент передаёт свои client_id и client_secret в формате
+        application/x-www-form-urlencoded, получает обратно access_token.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
       responses:
-        "200":
-          description: OK
+        '200':
+          description: Успешная выдача токена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Неправильный формат запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Неверные client_id или client_secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /public-key:
+    get:
+      tags:
+        - Auth
+      summary: Отдать публичный ключ (JWKS) для верификации JWT
+      description: |
+        Envoy и другие сервисы могут подтянуть JWKS для проверки подписи токенов.
+      responses:
+        '200':
+          description: JWKS с публичными ключами
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Jwks'
+        '500':
+          description: Ошибка сервера при формировании JWKS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    OAuth2ClientCredentials:
+      type: oauth2
+      description: |
+        Стандарт OAuth2 client_credentials flow для получения JWT.
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.pluto.internal/oauth/token
+          scopes: {}
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TokenRequest:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          enum: [client_credentials]
+          example: client_credentials
+        client_id:
+          type: string
+          example: pluto-swift-client
+        client_secret:
+          type: string
+          example: S3cReT-v4lUe-gEnErAtEd
+      required:
+        - grant_type
+        - client_id
+        - client_secret
+
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: JWT, подписанный RS256
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          description: Время жизни токена в секундах
+      required:
+        - access_token
+        - token_type
+        - expires_in
+
+    Jwk:
+      type: object
+      description: JSON Web Key
+      required:
+        - kty
+        - use
+        - kid
+        - alg
+        - n
+        - e
+      properties:
+        kty:
+          type: string
+          description: Тип ключа (обычно "RSA")
+        use:
+          type: string
+          description: Назначение ключа (обычно "sig")
+        kid:
+          type: string
+          description: Уникальный идентификатор ключа
+        alg:
+          type: string
+          description: Алгоритм подписи (например, "RS256")
+        n:
+          type: string
+          description: Модуль RSA в base64url
+        e:
+          type: string
+          description: Экспонента RSA в base64url
+
+    Jwks:
+      type: object
+      description: JSON Web Key Set
+      required:
+        - keys
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/Jwk'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        error_description:
+          type: string
+      required:
+        - error

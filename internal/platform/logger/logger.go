@@ -1,16 +1,14 @@
 package logger
 
 import (
-	"os"
-
 	"github.com/rs/zerolog"
-	"pluto-backend/internal/platform/config"
+	"os"
 )
 
 // New возвращает zerolog.Logger, настроенный согласно cfg.Level.
 // При parse error – default INFO.
-func New(cfg config.LoggingConfig) *zerolog.Logger {
-	lvl, err := zerolog.ParseLevel(cfg.Level)
+func New(level string) *zerolog.Logger {
+	lvl, err := zerolog.ParseLevel(level)
 	if err != nil {
 		lvl = zerolog.InfoLevel
 	}

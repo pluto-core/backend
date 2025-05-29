@@ -4,3 +4,5 @@ database:
   dsn: "postgres://user:pass@localhost:5432/pluto?sslmode=disable"
 logging:
   level: debug
+clients:
+  pluto-swift-client: "S3cReT-v4lUe-gEnErAtEd"

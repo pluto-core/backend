@@ -8,7 +8,6 @@ import (
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"pluto-backend/internal/platform/config"
 )
 
 func warmUpDB(db *sql.DB, n int) error {
@@ -40,8 +39,8 @@ func warmUpDB(db *sql.DB, n int) error {
 	return nil
 }
 
-func NewDB(cfg config.DatabaseConfig) (*sql.DB, error) {
-	db, err := sql.Open("pgx", cfg.DSN)
+func NewDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}

@@ -4,13 +4,14 @@ import (
 	"encoding/base64"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/go-chi/chi/v5"
+	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 	middleware "github.com/oapi-codegen/nethttp-middleware"
 	"github.com/rs/zerolog"
 	"golang.org/x/crypto/ed25519"
 	"pluto-backend/internal/manifest/api"
 	"pluto-backend/internal/manifest/api/gen"
+	"pluto-backend/internal/manifest/config"
 	"pluto-backend/internal/manifest/service"
-	"pluto-backend/internal/platform/config"
 	"pluto-backend/internal/platform/db"
 	"pluto-backend/internal/platform/errors"
 	"pluto-backend/internal/platform/logger"
@@ -20,9 +21,9 @@ import (
 
 func RunManifestService() error {
 	cfg := config.GetConfig()
-	log := logger.New(cfg.Logging)
+	log := logger.New(cfg.Logging.Level)
 
-	sqlDB, err := db.NewDB(cfg.Database)
+	sqlDB, err := db.NewDB(cfg.Database.DSN)
 	if err != nil {
 		return logFatalWrap(log, err, "failed to connect to database")
 	}
@@ -63,6 +64,9 @@ func RunManifestService() error {
 	r.Use(routerpkg.RequestLogger(log))
 	r.Use(middleware.OapiRequestValidatorWithOptions(spec, &oapiOpts))
 	r.Use(routermw.JSONContentType)
+	r.Use(chiMiddleware.RequestID)
+	r.Use(chiMiddleware.RealIP)
+	r.Use(chiMiddleware.Recoverer)
 
 	serverOpts := gen.ChiServerOptions{
 		BaseRouter:       r,
@@ -70,7 +74,7 @@ func RunManifestService() error {
 	}
 	r.Mount("/", gen.HandlerWithOptions(impl, serverOpts))
 
-	srv := routerpkg.NewServer(*cfg, log, r)
+	srv := routerpkg.NewServer(cfg.Server.Port, log, r)
 	log.Info().Msgf("Starting manifest-service on %d", cfg.Server.Port)
 
 	return srv.ListenAndServe()

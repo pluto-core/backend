@@ -3,26 +3,22 @@ package router
 import (
 	"crypto/tls"
 	"fmt"
-	"net/http"
-	"pluto-backend/internal/platform/config"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/quic-go/quic-go/http3"
 	"github.com/rs/zerolog"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
+	"net/http"
 )
 
-// NewChiRouter создаёт chi-маршрутизатор с базовыми middleware.
-func NewChiRouter(cfg config.Config, log *zerolog.Logger) *chi.Mux {
-	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(RequestLogger(log))
-	r.Use(middleware.Recoverer)
-	return r
-}
+//NewChiRouter создаёт chi-маршрутизатор с базовыми middleware.
+//func NewChiRouter(cfg config.Config, log *zerolog.Logger) *chi.Mux {
+//	r := chi.NewRouter()
+//	r.Use(middleware.RequestID)
+//	r.Use(middleware.RealIP)
+//	r.Use(RequestLogger(log))
+//	r.Use(middleware.Recoverer)
+//	return r
+//}
 
 // NewServer запускает два сервера на одном порту:
 //  1. HTTP/1.1+HTTP/2 cleartext (h2c) через std http.Server
@@ -31,11 +27,11 @@ func NewChiRouter(cfg config.Config, log *zerolog.Logger) *chi.Mux {
 // TLSConfig здесь нужен для HTTP/3; сертификаты можно положить в путь из конфига
 // и nginx при желании пробросит их внутрь контейнера.
 func NewServer(
-	cfg config.Config,
+	port int,
 	log *zerolog.Logger,
 	handler http.Handler,
 ) *http.Server {
-	addr := fmt.Sprintf(":%d", cfg.Server.Port)
+	addr := fmt.Sprintf(":%d", port)
 
 	// 1) Оборачиваем хендлер в h2c для HTTP/2 cleartext:
 	h2s := &http2.Server{}
