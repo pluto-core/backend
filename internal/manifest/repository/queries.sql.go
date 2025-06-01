@@ -143,13 +143,11 @@ SELECT m.id,
        m.created_at,
        m.meta_created_at,
        m.signature,
-       mc.ui                            AS U_I,
+       mc.ui AS U_I,
        mc.script,
        mc.actions,
        mc.permissions,
-       l.localization,
-       l.localization ->> 'title'       AS title,
-       l.localization ->> 'description' AS description
+       l.localization
 FROM manifest m
          LEFT JOIN manifest_content mc ON mc.manifest_id = m.id
          LEFT JOIN localization l ON l.manifest_id = m.id
@@ -177,8 +175,6 @@ type GetManifestRow struct {
 	Actions       pqtype.NullRawMessage
 	Permissions   []string
 	Localization  pqtype.NullRawMessage
-	Title         sql.NullString
-	Description   sql.NullString
 }
 
 func (q *Queries) GetManifest(ctx context.Context, arg GetManifestParams) (GetManifestRow, error) {
@@ -200,8 +196,6 @@ func (q *Queries) GetManifest(ctx context.Context, arg GetManifestParams) (GetMa
 		&i.Actions,
 		pq.Array(&i.Permissions),
 		&i.Localization,
-		&i.Title,
-		&i.Description,
 	)
 	return i, err
 }
@@ -216,18 +210,13 @@ SELECT m.id,
        m.author_email,
        m.created_at,
        m.meta_created_at,
-       t.value AS title,
-       d.value AS description
-FROM manifest m
-         LEFT JOIN manifest_localizations t
-                   ON t.manifest_id = m.id
-                       AND t.locale = $3::text
-                       AND t.key = 'title'
-         LEFT JOIN manifest_localizations d
-                   ON d.manifest_id = m.id
-                       AND d.locale = $3::text
-                       AND d.key = 'description'
-ORDER BY created_at DESC
+       -- 🔽 отдаём **всю** локализацию для запрошенной локали
+       (SELECT jsonb_object_agg(l.key, l.value)
+        FROM manifest_localizations AS l
+        WHERE l.manifest_id = m.id
+          AND l.locale = $3::text) AS localization
+FROM manifest AS m
+ORDER BY m.created_at DESC
 LIMIT $1 OFFSET $2
 `
 
@@ -247,8 +236,7 @@ type ListManifestsRow struct {
 	AuthorEmail   string
 	CreatedAt     time.Time
 	MetaCreatedAt time.Time
-	Title         sql.NullString
-	Description   sql.NullString
+	Localization  json.RawMessage
 }
 
 func (q *Queries) ListManifests(ctx context.Context, arg ListManifestsParams) ([]ListManifestsRow, error) {
@@ -270,8 +258,7 @@ func (q *Queries) ListManifests(ctx context.Context, arg ListManifestsParams) ([
 			&i.AuthorEmail,
 			&i.CreatedAt,
 			&i.MetaCreatedAt,
-			&i.Title,
-			&i.Description,
+			&i.Localization,
 		); err != nil {
 			return nil, err
 		}
@@ -374,8 +361,6 @@ func (q *Queries) SearchManifests(ctx context.Context, arg SearchManifestsParams
 
 const searchManifestsFTS = `-- name: SearchManifestsFTS :many
 SELECT m.id,
-       t.value AS title,
-       d.value AS description,
        m.version,
        m.icon,
        m.category,
@@ -383,15 +368,18 @@ SELECT m.id,
        m.author_name,
        m.author_email,
        m.created_at,
-       m.meta_created_at
+       m.meta_created_at,
+       (SELECT jsonb_object_agg(l.key, l.value)
+        FROM manifest_localizations AS l
+        WHERE l.manifest_id = m.id
+          AND l.locale = $1::text) AS localization
 FROM manifest AS m
-         LEFT JOIN manifest_localizations AS t
-                   ON t.manifest_id = m.id AND t.locale = $1::text AND t.key = 'title'
-         LEFT JOIN manifest_localizations AS d
-                   ON d.manifest_id = m.id AND d.locale = $1::text AND d.key = 'description'
 WHERE to_tsvector($2::regconfig,
-                  coalesce(t.value, '') || ' ' ||
-                  coalesce(d.value, '') || ' ' ||
+                  (SELECT string_agg(l.value, ' ')
+                   FROM manifest_localizations AS l
+                   WHERE l.manifest_id = m.id
+                     AND l.locale = $1::text
+                     AND l.key IN ('title', 'description')) || ' ' ||
                   m.category || ' ' ||
                   array_to_string(m.tags, ' ')
       )
@@ -407,8 +395,6 @@ type SearchManifestsFTSParams struct {
 
 type SearchManifestsFTSRow struct {
 	ID            uuid.UUID
-	Title         sql.NullString
-	Description   sql.NullString
 	Version       string
 	Icon          string
 	Category      string
@@ -417,6 +403,7 @@ type SearchManifestsFTSRow struct {
 	AuthorEmail   string
 	CreatedAt     time.Time
 	MetaCreatedAt time.Time
+	Localization  json.RawMessage
 }
 
 func (q *Queries) SearchManifestsFTS(ctx context.Context, arg SearchManifestsFTSParams) ([]SearchManifestsFTSRow, error) {
@@ -430,8 +417,6 @@ func (q *Queries) SearchManifestsFTS(ctx context.Context, arg SearchManifestsFTS
 		var i SearchManifestsFTSRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.Title,
-			&i.Description,
 			&i.Version,
 			&i.Icon,
 			&i.Category,
@@ -440,6 +425,7 @@ func (q *Queries) SearchManifestsFTS(ctx context.Context, arg SearchManifestsFTS
 			&i.AuthorEmail,
 			&i.CreatedAt,
 			&i.MetaCreatedAt,
+			&i.Localization,
 		); err != nil {
 			return nil, err
 		}

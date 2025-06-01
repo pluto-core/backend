@@ -52,7 +52,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ManifestMeta'
+                  $ref: '#/components/schemas/ManifestMetaLocalized'
     post:
       summary: Создать новый манифест
       operationId: createManifest
@@ -89,7 +89,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ManifestMeta'
+                  $ref: '#/components/schemas/ManifestMetaLocalized'
 
   /api/manifests/{id}:
     parameters:
@@ -264,11 +264,6 @@ components:
     ManifestBase:
       type: object
       properties:
-        title:
-          type: string
-        description:
-          type: string
-          maxLength: 100
         icon:
           type: string
         category:
@@ -290,8 +285,6 @@ components:
           type: array
           items: { type: string }
       required:
-        - title
-        - description
         - icon
         - category
         - tags
@@ -380,12 +373,6 @@ components:
           type: string
           format: date-time
           readOnly: true
-        title:
-          type: string
-          readOnly: true
-        description:
-          type: string
-          readOnly: true
       required:
         - id
         - version
@@ -395,9 +382,16 @@ components:
         - author
         - createdAt
         - metaCreatedAt
-        - title
-        - description
 
+
+    ManifestMetaLocalized:
+      allOf:
+        - $ref: '#/components/schemas/ManifestMeta'
+        - type: object
+          properties:
+            localization:
+              $ref: '#/components/schemas/ManifestLocalization'
+          required: [ localization ]
     # ——— Полная модель ответа —————————————————————————————————
 
     Manifest:
@@ -430,15 +424,11 @@ components:
 
     ManifestLocalizationCreate:
       type: object
-      properties:
-        strings:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              type: string
-          example:
-            en:
-              title: "Title"
-              description: "Description"
-      required: [ strings ]
+      additionalProperties:
+        type: object
+        additionalProperties:
+          type: string
+      example:
+        en:
+          title: "Title"
+          description: "Description"

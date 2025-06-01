@@ -38,12 +38,10 @@ type ManifestBase struct {
 	Actions     *[]ManifestActionBase `json:"actions,omitempty"`
 	Author      Author                `json:"author"`
 	Category    string                `json:"category"`
-	Description string                `json:"description"`
 	Icon        string                `json:"icon"`
 	Permissions []string              `json:"permissions"`
 	Script      ManifestScriptBase    `json:"script"`
 	Tags        []string              `json:"tags"`
-	Title       string                `json:"title"`
 
 	// Ui Конфигурация пользовательского интерфейса
 	Ui ManifestUiBase `json:"ui"`
@@ -54,13 +52,11 @@ type ManifestCreate struct {
 	Actions      *[]ManifestActionBase      `json:"actions,omitempty"`
 	Author       Author                     `json:"author"`
 	Category     string                     `json:"category"`
-	Description  string                     `json:"description"`
 	Icon         string                     `json:"icon"`
 	Localization ManifestLocalizationCreate `json:"localization"`
 	Permissions  []string                   `json:"permissions"`
 	Script       ManifestScriptBase         `json:"script"`
 	Tags         []string                   `json:"tags"`
-	Title        string                     `json:"title"`
 
 	// Ui Конфигурация пользовательского интерфейса
 	Ui ManifestUiBase `json:"ui"`
@@ -73,22 +69,31 @@ type ManifestLocalization = ManifestLocalizationBase
 type ManifestLocalizationBase = json.RawMessage
 
 // ManifestLocalizationCreate defines model for ManifestLocalizationCreate.
-type ManifestLocalizationCreate struct {
-	Strings map[string]map[string]string `json:"strings"`
-}
+type ManifestLocalizationCreate map[string]map[string]string
 
 // ManifestMeta defines model for ManifestMeta.
 type ManifestMeta struct {
 	Author        Author              `json:"author"`
 	Category      *string             `json:"category,omitempty"`
 	CreatedAt     *time.Time          `json:"createdAt,omitempty"`
-	Description   *string             `json:"description,omitempty"`
 	Icon          *string             `json:"icon,omitempty"`
 	Id            *openapi_types.UUID `json:"id,omitempty"`
 	MetaCreatedAt *time.Time          `json:"metaCreatedAt,omitempty"`
 	Tags          *[]string           `json:"tags,omitempty"`
-	Title         *string             `json:"title,omitempty"`
 	Version       *string             `json:"version,omitempty"`
+}
+
+// ManifestMetaLocalized defines model for ManifestMetaLocalized.
+type ManifestMetaLocalized struct {
+	Author        Author               `json:"author"`
+	Category      *string              `json:"category,omitempty"`
+	CreatedAt     *time.Time           `json:"createdAt,omitempty"`
+	Icon          *string              `json:"icon,omitempty"`
+	Id            *openapi_types.UUID  `json:"id,omitempty"`
+	Localization  ManifestLocalization `json:"localization"`
+	MetaCreatedAt *time.Time           `json:"metaCreatedAt,omitempty"`
+	Tags          *[]string            `json:"tags,omitempty"`
+	Version       *string              `json:"version,omitempty"`
 }
 
 // ManifestScript defines model for ManifestScript.
@@ -108,13 +113,11 @@ type ManifestUpdate struct {
 	Actions      *[]ManifestActionBase      `json:"actions,omitempty"`
 	Author       Author                     `json:"author"`
 	Category     string                     `json:"category"`
-	Description  string                     `json:"description"`
 	Icon         string                     `json:"icon"`
 	Localization ManifestLocalizationCreate `json:"localization"`
 	Permissions  []string                   `json:"permissions"`
 	Script       ManifestScriptBase         `json:"script"`
 	Tags         []string                   `json:"tags"`
-	Title        string                     `json:"title"`
 
 	// Ui Конфигурация пользовательского интерфейса
 	Ui ManifestUiBase `json:"ui"`

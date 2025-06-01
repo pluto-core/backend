@@ -8,18 +8,13 @@ SELECT m.id,
        m.author_email,
        m.created_at,
        m.meta_created_at,
-       t.value AS title,
-       d.value AS description
-FROM manifest m
-         LEFT JOIN manifest_localizations t
-                   ON t.manifest_id = m.id
-                       AND t.locale = $3::text
-                       AND t.key = 'title'
-         LEFT JOIN manifest_localizations d
-                   ON d.manifest_id = m.id
-                       AND d.locale = $3::text
-                       AND d.key = 'description'
-ORDER BY created_at DESC
+       -- 🔽 отдаём **всю** локализацию для запрошенной локали
+       (SELECT jsonb_object_agg(l.key, l.value)
+        FROM manifest_localizations AS l
+        WHERE l.manifest_id = m.id
+          AND l.locale = $3::text) AS localization
+FROM manifest AS m
+ORDER BY m.created_at DESC
 LIMIT $1 OFFSET $2;
 
 
@@ -61,8 +56,6 @@ ORDER BY m.created_at DESC;
 
 -- name: SearchManifestsFTS :many
 SELECT m.id,
-       t.value AS title,
-       d.value AS description,
        m.version,
        m.icon,
        m.category,
@@ -70,15 +63,18 @@ SELECT m.id,
        m.author_name,
        m.author_email,
        m.created_at,
-       m.meta_created_at
+       m.meta_created_at,
+       (SELECT jsonb_object_agg(l.key, l.value)
+        FROM manifest_localizations AS l
+        WHERE l.manifest_id = m.id
+          AND l.locale = sqlc.arg(locale)::text) AS localization
 FROM manifest AS m
-         LEFT JOIN manifest_localizations AS t
-                   ON t.manifest_id = m.id AND t.locale = sqlc.arg(locale)::text AND t.key = 'title'
-         LEFT JOIN manifest_localizations AS d
-                   ON d.manifest_id = m.id AND d.locale = sqlc.arg(locale)::text AND d.key = 'description'
 WHERE to_tsvector(sqlc.arg(config)::regconfig,
-                  coalesce(t.value, '') || ' ' ||
-                  coalesce(d.value, '') || ' ' ||
+                  (SELECT string_agg(l.value, ' ')
+                   FROM manifest_localizations AS l
+                   WHERE l.manifest_id = m.id
+                     AND l.locale = sqlc.arg(locale)::text
+                     AND l.key IN ('title', 'description')) || ' ' ||
                   m.category || ' ' ||
                   array_to_string(m.tags, ' ')
       )
@@ -101,13 +97,11 @@ SELECT m.id,
        m.created_at,
        m.meta_created_at,
        m.signature,
-       mc.ui                            AS U_I,
+       mc.ui AS U_I,
        mc.script,
        mc.actions,
        mc.permissions,
-       l.localization,
-       l.localization ->> 'title'       AS title,
-       l.localization ->> 'description' AS description
+       l.localization
 FROM manifest m
          LEFT JOIN manifest_content mc ON mc.manifest_id = m.id
          LEFT JOIN localization l ON l.manifest_id = m.id

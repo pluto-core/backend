@@ -5,65 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2c15436-e0fc-43ef-8c03-1f679e0b39cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/auth/api/gen/api.gen.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/auth/api/gen/server.gen.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/auth/api/gen/spec.gen.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/auth/api/gen/types.gen.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/auth/api/impl.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/auth/config/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/manifest/config/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/manifest/db/provider.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/openapi/auth.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/auth.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/.helmignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/Chart.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/Chart.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/charts/postgresql-16.1.0.tgz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/files/envoy.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/files/manifest.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/NOTES.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/_helpers.tpl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/envoy-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/envoy-deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/envoy-service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/hpa.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/manifest-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/manifest-deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/manifest-service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/migrate-job.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/serviceaccount.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/swagger-spec-configmap.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/swaggerui-deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/swaggerui-service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/templates/tests/test-connection.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/charts/pluto-backend/values.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/auth-service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/auth-service/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/auth.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/auth.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/manifest.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/openapi/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/manifest.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/manifest-service" beforeDir="false" afterPath="$PROJECT_DIR$/bin/manifest-service" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/domain/domain.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/handlers/handlers.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/middleware/middleware.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/bootstrap/bootstrap.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/bootstrap/bootstrap.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/domain/domain.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/platform/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/db/db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/platform/logger/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/logger/logger.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/platform/router/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/router/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/api/impl.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/impl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/db/provider.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/db/provider.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/manifest/service/signing.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/service/signing.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="ChangesViewManager">
-    <option name="groupingKeys">
-      <option value="directory" />
-      <option value="repository" />
-    </option>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -186,6 +145,14 @@
       </makefile>
       <method v="2" />
     </configuration>
+    <configuration name="manifest-db-generate" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="manifest-db-generate" workingDirectory="" arguments="">
+        <envs>
+          <env name="DATABASE_DSN" value="postgres://user:pass@localhost:5432/pluto?sslmode=disable" />
+        </envs>
+      </makefile>
+      <method v="2" />
+    </configuration>
     <configuration name="run-manifest" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/Makefile" target="run-manifest" workingDirectory="" arguments="">
         <envs>
@@ -208,34 +175,21 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="deploy/docker-compose.local.yml.vault: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="services">
-            <list>
-              <option value="vault" />
-            </list>
-          </option>
-          <option name="sourceFilePath" value="deploy/docker-compose.local.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Docker.deploy/docker-compose.local.yml.vault: Compose Deployment" />
       <item itemvalue="Docker.deploy/docker-compose.local.yml: Compose Deployment" />
       <item itemvalue="Go Build.go build Debug MyApp" />
       <item itemvalue="Go Build.go build pluto-backend/cmd/migrate" />
+      <item itemvalue="Makefile Target.manifest-db-generate" />
       <item itemvalue="Makefile Target.build" />
       <item itemvalue="Makefile Target.run-manifest" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Makefile Target.run-manifest" />
+        <item itemvalue="Makefile Target.manifest-db-generate" />
         <item itemvalue="Makefile Target.build" />
         <item itemvalue="Go Build.go build pluto-backend/cmd/migrate" />
         <item itemvalue="Docker.deploy/docker-compose.local.yml: Compose Deployment" />
-        <item itemvalue="Docker.deploy/docker-compose.local.yml.vault: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
@@ -268,7 +222,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/manifest/db/provider.go</url>
-          <line>70</line>
+          <line>71</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

@@ -71,9 +71,9 @@ func (h *Handlers) ListManifests(
 		return
 	}
 
-	out := make([]gen.ManifestMeta, len(repos))
+	out := make([]gen.ManifestMetaLocalized, len(repos))
 	for i, m := range repos {
-		out[i] = gen.ManifestMeta{
+		out[i] = gen.ManifestMetaLocalized{
 			Id:       &m.ID,
 			Version:  &m.Version,
 			Icon:     &m.Icon,
@@ -85,8 +85,7 @@ func (h *Handlers) ListManifests(
 			},
 			CreatedAt:     &m.CreatedAt,
 			MetaCreatedAt: &m.MetaCreatedAt,
-			Title:         toStringPtr(m.Title), // sql.NullString
-			Description:   toStringPtr(m.Title), // sql.NullString
+			Localization:  m.Localization,
 		}
 	}
 
@@ -126,9 +125,9 @@ func (h *Handlers) SearchManifests(
 		return
 	}
 
-	out := make([]gen.ManifestMeta, len(repos))
+	out := make([]gen.ManifestMetaLocalized, len(repos))
 	for i, m := range repos {
-		out[i] = gen.ManifestMeta{
+		out[i] = gen.ManifestMetaLocalized{
 			Id:       &m.ID,
 			Version:  &m.Version,
 			Icon:     &m.Icon,
@@ -140,8 +139,7 @@ func (h *Handlers) SearchManifests(
 			},
 			CreatedAt:     &m.CreatedAt,
 			MetaCreatedAt: &m.MetaCreatedAt,
-			Title:         toStringPtr(m.Title),
-			Description:   toStringPtr(m.Description),
+			Localization:  m.Localization,
 		}
 	}
 
@@ -163,9 +161,7 @@ func (h *Handlers) GetManifestById(
 	}
 
 	meta := gen.ManifestMeta{
-		Id:          &repo.ID,
-		Title:       &repo.Title.String,
-		Description: &repo.Description.String,
+		Id: &repo.ID,
 		Author: gen.Author{
 			Email: repo.AuthorEmail,
 			Name:  repo.AuthorName,
@@ -176,7 +172,6 @@ func (h *Handlers) GetManifestById(
 		Category:  &repo.Category,
 		Tags:      &repo.Tags,
 	}
-
 	var scriptRaw gen.ManifestScript
 
 	if repo.Script.Valid {

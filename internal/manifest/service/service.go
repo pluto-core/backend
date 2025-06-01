@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"pluto-backend/internal/manifest/api/gen"
@@ -64,7 +63,7 @@ func (s *Service) CreateManifest(ctx context.Context, req gen.ManifestCreate) (u
 		return uuid.Nil, err
 	}
 
-	enLocale, ok := req.Localization.Strings["en"]
+	enLocale, ok := req.Localization["en"]
 	if !ok {
 		return uuid.Nil, errors.New("localization must include 'en'")
 	}
@@ -76,7 +75,7 @@ func (s *Service) CreateManifest(ctx context.Context, req gen.ManifestCreate) (u
 	}
 
 	var locales, keys, values []string
-	for locale, entries := range req.Localization.Strings {
+	for locale, entries := range req.Localization {
 		for key, value := range entries {
 			locales = append(locales, locale)
 			keys = append(keys, key)
@@ -94,7 +93,6 @@ func (s *Service) CreateManifest(ctx context.Context, req gen.ManifestCreate) (u
 	if err != nil {
 		return uuid.Nil, err
 	}
-	fmt.Println(string(payload))
 
 	// подписываем
 	signature, err := s.signer.Sign(payload)

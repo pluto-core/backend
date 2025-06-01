@@ -4,6 +4,7 @@ go 1.23.0
 
 require (
 	github.com/getkin/kin-openapi v0.131.0
+	github.com/gibson042/canonicaljson-go v1.0.3
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/golang-migrate/migrate/v4 v4.18.3
 	github.com/google/uuid v1.6.0
