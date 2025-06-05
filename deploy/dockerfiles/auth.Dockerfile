@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Генерируем код по OpenAPI (types, сервер, spec)
-RUN go generate ./api/openapi/auth.yaml
+#RUN go generate ./api/openapi/auth.yaml
 
 # Сборка auth-service бинаря
 RUN CGO_ENABLED=0 \
