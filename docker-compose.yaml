@@ -4,7 +4,8 @@ services:
     container_name: pluto_postgres_auth
     restart: unless-stopped
     env_file:
-      - ./.env.auth
+      - path: ./.env.auth
+        required: true
     environment:
       POSTGRES_USER: ${AUTH_DB_USER}
       POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
@@ -27,12 +28,13 @@ services:
     volumes:
       - ./migrations/auth:/migrations/auth:ro
     env_file:
-      - ./.env.auth
+      - path: ./.env.auth
+        required: true
     networks:
       - pluto-network
 
   auth-service:
-    image: ghcr.io/your-ghcr-username/pluto-auth:latest
+    image: ghcr.io/eyadroshnikov/pluto-auth:latest
     container_name: pluto_auth
     restart: unless-stopped
     depends_on:
@@ -41,7 +43,8 @@ services:
     ports:
       - "8081:8081"
     env_file:
-      - ./.env.auth
+      - path: ./.env.auth
+        required: true
     volumes:
       - ./configs/auth.yaml:/configs/auth.yaml:ro
     networks:
@@ -52,7 +55,8 @@ services:
     container_name: pluto_postgres_manifest
     restart: unless-stopped
     env_file:
-      - ./.env.manifest
+      - path: ./.env.manifest
+        required: true
     environment:
       POSTGRES_USER: ${MANIFEST_DB_USER}
       POSTGRES_PASSWORD: ${MANIFEST_DB_PASSWORD}
@@ -75,12 +79,13 @@ services:
     volumes:
       - ./migrations/manifest:/migrations/manifest:ro
     env_file:
-      - ./.env.manifest
+      - path: ./.env.manifest
+        required: true
     networks:
       - pluto-network
 
   manifest-service:
-    image: ghcr.io/your-ghcr-username/pluto-manifest:latest
+    image: ghcr.io/eyadroshnikov/pluto-manifest:latest
     container_name: pluto_manifest
     restart: unless-stopped
     depends_on:
@@ -88,7 +93,8 @@ services:
       - migrate-manifest
       - auth-service
     env_file:
-      - ./.env.manifest
+      - path: ./.env.manifest
+        required: true
     volumes:
       - ./configs/manifest.yaml:/configs/manifest.yaml:ro
     networks:
