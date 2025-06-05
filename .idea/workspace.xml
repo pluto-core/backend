@@ -5,40 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2c15436-e0fc-43ef-8c03-1f679e0b39cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/internal/auth/repository/queries.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/auth/repository/sqlc.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/auth/service/signer.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/migrations/auth/000_init.up.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/public.abK9xQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/openapi/auth.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/auth.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/auth-service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/auth-service/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/migrate/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/migrate/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/auth.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/auth.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/envoy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/envoy.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/manifest.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/docker-compose.local.yml" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/docker-compose.local.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy/dockerfiles/auth.Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/dockerfiles/auth.Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/api/gen/server.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/api/gen/server.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/api/gen/spec.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/api/gen/spec.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/api/gen/types.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/api/gen/types.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/api/impl.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/api/impl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/repository/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/auth/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/service/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/auth/000_init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/bootstrap/bootstrap.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

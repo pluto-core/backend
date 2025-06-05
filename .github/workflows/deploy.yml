@@ -2,7 +2,7 @@ name: Build & Deploy Pluto Services
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 env:
