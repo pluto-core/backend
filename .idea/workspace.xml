@@ -5,19 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2c15436-e0fc-43ef-8c03-1f679e0b39cb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/internal/auth/repository/queries.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/auth/repository/sqlc.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/auth/service/signer.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/auth/000_init.up.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2270bffa-de69-460c-bcfa-525a7f6fab0d/storage_v2/_src_/database/pluto.NCZdBg/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/openapi/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/manifest.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/manifest-service" beforeDir="false" afterPath="$PROJECT_DIR$/bin/manifest-service" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/openapi/auth.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api/openapi/auth.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/auth-service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/auth-service/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/migrate/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/migrate/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/auth.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/auth.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/envoy.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/envoy.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/manifest.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/manifest.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/docker-compose.local.yml" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/docker-compose.local.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/dockerfiles/auth.Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/dockerfiles/auth.Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/spec.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/gen/types.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/api/impl.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/api/impl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/db/provider.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/db/provider.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/repository/queries.sql.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/service/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/manifest/service/signing.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/manifest/service/signing.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/auth/api/gen/server.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/api/gen/server.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/auth/api/gen/spec.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/api/gen/spec.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/auth/api/gen/types.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/api/gen/types.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/auth/api/impl.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/api/impl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/auth/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/auth/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/repository/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/auth/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/auth/000_init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/bootstrap/bootstrap.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +90,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Docker.deploy/docker-compose.local.yml.auth-postgres: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;Docker.deploy/docker-compose.local.yml.nginx: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;Docker.deploy/docker-compose.local.yml.vault: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;Docker.deploy/docker-compose.local.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
@@ -76,6 +98,8 @@
     &quot;Go Build.go build main.go (1).executor&quot;: &quot;Run&quot;,
     &quot;Go Build.go build main.go.executor&quot;: &quot;Run&quot;,
     &quot;Go Build.go build pluto-backend/cmd/migrate.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.auth-db-generate.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.auth-migrate.executor&quot;: &quot;Run&quot;,
     &quot;Makefile Target.build.executor&quot;: &quot;Run&quot;,
     &quot;Makefile Target.generate.executor&quot;: &quot;Run&quot;,
     &quot;Makefile Target.manifest-db-generate.executor&quot;: &quot;Run&quot;,
@@ -92,7 +116,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/eyadroshnikov/Developer/Pluto/pluto-backend/charts/pluto-backend/files&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/eyadroshnikov/Developer/Pluto/pluto-backend/internal/auth/repository&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
@@ -107,6 +131,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/auth/repository" />
       <recent name="$PROJECT_DIR$/charts/pluto-backend/files" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -117,7 +142,7 @@
       <recent name="$PROJECT_DIR$/api/manifest" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.run-manifest">
+  <component name="RunManager" selected="Makefile Target.run-auth">
     <configuration name="go build Debug MyApp" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="pluto-backend" />
       <working_directory value="$PROJECT_DIR$" />
@@ -130,35 +155,51 @@
       <filePath value="$PROJECT_DIR$/../pluto-backend|$PROJECT_DIR$/cmd/manifest-service/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build pluto-backend/cmd/migrate" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="pluto-backend" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="pluto-backend/cmd/migrate" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/cmd/migrate/main.go" />
+    <configuration name="auth-db-generate" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="auth-db-generate" workingDirectory="" arguments="">
+        <envs>
+          <env name="DATABASE_DSN" value="postgres://user:pass@localhost:5532/auth?sslmode=disable" />
+        </envs>
+      </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="build" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="build" workingDirectory="" arguments="">
+    <configuration name="auth-migrate" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="auth-migrate" workingDirectory="" arguments="">
+        <envs>
+          <env name="PLUTO_DATABASE_DSN" value="postgres://user:pass@localhost:5532/auth?sslmode=disable" />
+        </envs>
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="manifest-migrate" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="manifest-migrate" workingDirectory="" arguments="">
+        <envs>
+          <env name="PLUTO_DATABASE_DSN" value="postgres://user:pass@localhost:5432/manifest?sslmode=disable" />
+        </envs>
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="run-auth" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="run-auth" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="manifest-db-generate" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="manifest-db-generate" workingDirectory="" arguments="">
-        <envs>
-          <env name="DATABASE_DSN" value="postgres://user:pass@localhost:5432/pluto?sslmode=disable" />
-        </envs>
-      </makefile>
-      <method v="2" />
-    </configuration>
-    <configuration name="run-manifest" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="run-manifest" workingDirectory="" arguments="">
-        <envs>
-          <env name="VAULT_TOKEN" value="root" />
-        </envs>
-      </makefile>
+    <configuration name="auth.yaml" type="SwaggerCodegen" editBeforeRun="true" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="customTemplatesPath" value="" />
+      <option name="generateToPath" value="$USER_HOME$/gen" />
+      <option name="generationParameters">
+        <list />
+      </option>
+      <option name="generatorType" value="OPENAPI_GENERATOR_V7" />
+      <option name="jdkPath" value="$APPLICATION_HOME_DIR$/jbr/Contents/Home/bin/java" />
+      <option name="language" value="go" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="specificationPath" value="$PROJECT_DIR$/api/openapi/auth.yaml" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
@@ -167,37 +208,29 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="deploy/docker-compose.local.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="sourceFilePath" value="deploy/docker-compose.local.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Docker.deploy/docker-compose.local.yml: Compose Deployment" />
       <item itemvalue="Go Build.go build Debug MyApp" />
-      <item itemvalue="Go Build.go build pluto-backend/cmd/migrate" />
-      <item itemvalue="Makefile Target.manifest-db-generate" />
-      <item itemvalue="Makefile Target.build" />
-      <item itemvalue="Makefile Target.run-manifest" />
+      <item itemvalue="Makefile Target.run-auth" />
+      <item itemvalue="Makefile Target.auth-migrate" />
+      <item itemvalue="Makefile Target.manifest-migrate" />
+      <item itemvalue="Makefile Target.auth-db-generate" />
+      <item itemvalue="OpenAPI/Swagger Code Generator.auth.yaml" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Makefile Target.run-manifest" />
-        <item itemvalue="Makefile Target.manifest-db-generate" />
-        <item itemvalue="Makefile Target.build" />
-        <item itemvalue="Go Build.go build pluto-backend/cmd/migrate" />
-        <item itemvalue="Docker.deploy/docker-compose.local.yml: Compose Deployment" />
+        <item itemvalue="Makefile Target.run-auth" />
+        <item itemvalue="OpenAPI/Swagger Code Generator.auth.yaml" />
+        <item itemvalue="Makefile Target.auth-migrate" />
+        <item itemvalue="Makefile Target.auth-db-generate" />
+        <item itemvalue="Makefile Target.manifest-migrate" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-gosdk-3b128438d3f6-34ac7aa8f6ab-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-251.23774.430" />
-        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-GO-251.23774.430" />
+        <option value="bundled-gosdk-3b128438d3f6-4b567d62c776-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-251.26094.127" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-GO-251.26094.127" />
       </set>
     </attachedChunks>
   </component>

@@ -19,8 +19,14 @@ run-manifest:
 manifest-db-generate:
 	sqlc generate --file internal/manifest/repository/sqlc.yaml
 
+auth-db-generate:
+	sqlc generate --file internal/auth/repository/sqlc.yaml
+
 manifest-migrate:
 	go run cmd/migrate/main.go manifest
+
+auth-migrate:
+	go run cmd/migrate/main.go auth
 
 .PHONY: generate
 generate:

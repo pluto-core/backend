@@ -1,165 +1,177 @@
-openapi: 3.0.1
+# File: api/openapi/auth.yaml
+openapi: 3.0.3
 info:
-  title: Pluto Auth API
-  description: |
-    Сервис авторизации для выдачи и валидации JWT-токенов по flow client_credentials.
-  version: 1.0.0
-servers:
-  - url: https://auth.pluto.internal
-    description: Внутренний URL Auth-сервиса
+  title: Pluto Auth Service API
+  version: "1.0.0"
+
 paths:
-  /oauth/token:
+  /auth/app-login:
     post:
-      tags:
-        - Auth
-      summary: Выдать JWT по client_credentials
-      description: |
-        Клиент передаёт свои client_id и client_secret в формате
-        application/x-www-form-urlencoded, получает обратно access_token.
+      operationId: AppLogin
+      summary: "Получить JWT по фингерпринту приложения"
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
-              $ref: '#/components/schemas/TokenRequest'
+              $ref: "#/components/schemas/AppLoginRequest"
       responses:
-        '200':
-          description: Успешная выдача токена
+        "200":
+          description: "Успешная аутентификация"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenResponse'
-        '400':
-          description: Неправильный формат запроса
+                $ref: "#/components/schemas/AppLoginResponse"
+        "400":
+          description: "Неверный запрос"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: Неверные client_id или client_secret
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Внутренняя ошибка сервера"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /public-key:
+                $ref: "#/components/schemas/ErrorResponse"
+
+#  /auth/app-logout:
+#    post:
+#      operationId: AppLogout
+#      summary: "Отозвать JWT (logout)"
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: "#/components/schemas/AppLogoutRequest"
+#      responses:
+#        "204":
+#          description: "Успешный logout"
+#        "400":
+#          description: "Неверный запрос"
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/ErrorResponse"
+#        "404":
+#          description: "Сессия не найдена"
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/ErrorResponse"
+#        "500":
+#          description: "Внутренняя ошибка сервера"
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/public-key:
     get:
-      tags:
-        - Auth
-      summary: Отдать публичный ключ (JWKS) для верификации JWT
-      description: |
-        Envoy и другие сервисы могут подтянуть JWKS для проверки подписи токенов.
+      operationId: GetPublicKey
+      summary: "Вернуть публичный ключ в PEM"
       responses:
-        '200':
-          description: JWKS с публичными ключами
+        "200":
+          description: "PEM-encoded public key"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Jwks'
-        '500':
-          description: Ошибка сервера при формировании JWKS
+                $ref: "#/components/schemas/PublicKeyResponse"
+        "500":
+          description: "Внутренняя ошибка сервера"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /health:
+    get:
+      operationId: Health
+      summary: "Health check"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
 
 components:
-  securitySchemes:
-    OAuth2ClientCredentials:
-      type: oauth2
-      description: |
-        Стандарт OAuth2 client_credentials flow для получения JWT.
-      flows:
-        clientCredentials:
-          tokenUrl: https://auth.pluto.internal/oauth/token
-          scopes: {}
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   schemas:
-    TokenRequest:
+    AppLoginRequest:
       type: object
-      properties:
-        grant_type:
-          type: string
-          enum: [client_credentials]
-          example: client_credentials
-        client_id:
-          type: string
-          example: pluto-swift-client
-        client_secret:
-          type: string
-          example: S3cReT-v4lUe-gEnErAtEd
       required:
-        - grant_type
-        - client_id
-        - client_secret
-
-    TokenResponse:
+        - device_id
+        - os
+        - app_version
+      properties:
+        device_id:
+          type: string
+          description: "Уникальный идентификатор устройства (например, UUID)"
+        os:
+          type: string
+          description: "Информация об ОС (например, \"macOS 14.1\")"
+        app_version:
+          type: string
+          description: "Версия приложения (например, \"1.2.3\")"
+        additional:
+          type: object
+          additionalProperties:
+            type: string
+          description: "Дополнительная информация (архитектура, регион и т.п.)"
+    AppLoginResponse:
       type: object
+      required:
+        - access_token
+        - expires_in
+        - session_id
       properties:
         access_token:
           type: string
-          description: JWT, подписанный RS256
-        token_type:
-          type: string
-          example: Bearer
+          description: "JWT для запросов к API"
         expires_in:
           type: integer
-          description: Время жизни токена в секундах
-      required:
-        - access_token
-        - token_type
-        - expires_in
-
-    Jwk:
+          format: int32
+          description: "Срок жизни токена в секундах"
+        session_id:
+          type: string
+          format: uuid
+          description: "UUID сессии, которую можно использовать при logout"
+    AppLogoutRequest:
       type: object
-      description: JSON Web Key
       required:
-        - kty
-        - use
-        - kid
-        - alg
-        - n
-        - e
+        - session_id
+        - jti
       properties:
-        kty:
+        session_id:
           type: string
-          description: Тип ключа (обычно "RSA")
-        use:
+          format: uuid
+          description: "UUID сессии, которую нужно отозвать"
+        jti:
           type: string
-          description: Назначение ключа (обычно "sig")
-        kid:
-          type: string
-          description: Уникальный идентификатор ключа
-        alg:
-          type: string
-          description: Алгоритм подписи (например, "RS256")
-        n:
-          type: string
-          description: Модуль RSA в base64url
-        e:
-          type: string
-          description: Экспонента RSA в base64url
-
-    Jwks:
+          description: "JWT ID (jti) из access_token"
+    PublicKeyResponse:
       type: object
-      description: JSON Web Key Set
       required:
-        - keys
+        - public_key
       properties:
-        keys:
-          type: array
-          items:
-            $ref: '#/components/schemas/Jwk'
-
+        public_key:
+          type: string
+          description: "PEM-encoded public key"
+    HealthResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          example: "ok"
     ErrorResponse:
       type: object
+      required:
+        - error
       properties:
         error:
           type: string
-        error_description:
-          type: string
-      required:
-        - error
+          description: "Описание ошибки"

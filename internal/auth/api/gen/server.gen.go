@@ -12,27 +12,36 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Выдать JWT по client_credentials
-	// (POST /oauth/token)
-	PostOauthToken(w http.ResponseWriter, r *http.Request)
-	// Отдать публичный ключ (JWKS) для верификации JWT
-	// (GET /public-key)
+	// Получить JWT по фингерпринту приложения
+	// (POST /auth/app-login)
+	AppLogin(w http.ResponseWriter, r *http.Request)
+	// Вернуть публичный ключ в PEM
+	// (GET /auth/public-key)
 	GetPublicKey(w http.ResponseWriter, r *http.Request)
+	// Health check
+	// (GET /health)
+	Health(w http.ResponseWriter, r *http.Request)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
 
 type Unimplemented struct{}
 
-// Выдать JWT по client_credentials
-// (POST /oauth/token)
-func (_ Unimplemented) PostOauthToken(w http.ResponseWriter, r *http.Request) {
+// Получить JWT по фингерпринту приложения
+// (POST /auth/app-login)
+func (_ Unimplemented) AppLogin(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// Отдать публичный ключ (JWKS) для верификации JWT
-// (GET /public-key)
+// Вернуть публичный ключ в PEM
+// (GET /auth/public-key)
 func (_ Unimplemented) GetPublicKey(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Health check
+// (GET /health)
+func (_ Unimplemented) Health(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -45,12 +54,12 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// PostOauthToken operation middleware
-func (siw *ServerInterfaceWrapper) PostOauthToken(w http.ResponseWriter, r *http.Request) {
+// AppLogin operation middleware
+func (siw *ServerInterfaceWrapper) AppLogin(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PostOauthToken(w, r)
+		siw.Handler.AppLogin(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -66,6 +75,21 @@ func (siw *ServerInterfaceWrapper) GetPublicKey(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetPublicKey(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// Health operation middleware
+func (siw *ServerInterfaceWrapper) Health(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.Health(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -189,10 +213,13 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/oauth/token", wrapper.PostOauthToken)
+		r.Post(options.BaseURL+"/auth/app-login", wrapper.AppLogin)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/public-key", wrapper.GetPublicKey)
+		r.Get(options.BaseURL+"/auth/public-key", wrapper.GetPublicKey)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/health", wrapper.Health)
 	})
 
 	return r

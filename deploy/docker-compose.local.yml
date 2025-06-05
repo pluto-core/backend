@@ -1,9 +1,17 @@
 services:
-  postgres:
+  manifest-db:
     image: postgres:17
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
-      POSTGRES_DB: pluto
+      POSTGRES_DB: manifest
     ports:
       - "5432:5432"
+  auth-db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: auth
+    ports:
+      - "5532:5432"

@@ -21,5 +21,6 @@ func main() {
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatal(err)
 	}
+
 	log.Printf("migrations for %s applied", svc)
 }

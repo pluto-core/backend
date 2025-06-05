@@ -1,10 +1,117 @@
-version: "3"
-
 services:
-  envoy:
-    image: envoyproxy/envoy:v1.30-latest
+  postgres-auth:
+    image: postgres:17
+    container_name: pluto_postgres_auth
+    restart: unless-stopped
+    env_file:
+      - ./.env.auth
+    environment:
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+      POSTGRES_DB: ${AUTH_DB_NAME}
     volumes:
-      - ./configs/envoy.yaml:/etc/envoy/envoy.yaml
+      - postgres_auth_data:/var/lib/postgresql/data
+    networks:
+      - pluto-network
+
+  migrate-auth:
+    image: migrate/migrate:latest
+    container_name: pluto_migration_auth
+    depends_on:
+      - postgres-auth
+    command: >
+      sh -c "
+        sleep 5 &&
+        migrate -path /migrations/auth -database ${AUTH_DATABASE_URL} up
+      "
+    volumes:
+      - ./migrations/auth:/migrations/auth:ro
+    env_file:
+      - ./.env.auth
+    networks:
+      - pluto-network
+
+  auth-service:
+    image: ghcr.io/your-ghcr-username/pluto-auth:latest
+    container_name: pluto_auth
+    restart: unless-stopped
+    depends_on:
+      - postgres-auth
+      - migrate-auth
     ports:
-      - "8080:8080"
-      - "9901:9901"
+      - "8081:8081"
+    env_file:
+      - ./.env.auth
+    volumes:
+      - ./configs/auth.yaml:/configs/auth.yaml:ro
+    networks:
+      - pluto-network
+
+  postgres-manifest:
+    image: postgres:17
+    container_name: pluto_postgres_manifest
+    restart: unless-stopped
+    env_file:
+      - ./.env.manifest
+    environment:
+      POSTGRES_USER: ${MANIFEST_DB_USER}
+      POSTGRES_PASSWORD: ${MANIFEST_DB_PASSWORD}
+      POSTGRES_DB: ${MANIFEST_DB_NAME}
+    volumes:
+      - postgres_manifest_data:/var/lib/postgresql/data
+    networks:
+      - pluto-network
+
+  migrate-manifest:
+    image: migrate/migrate:latest
+    container_name: pluto_migration_manifest
+    depends_on:
+      - postgres-manifest
+    command: >
+      sh -c "
+        sleep 5 &&
+        migrate -path /migrations/manifest -database ${MANIFEST_DATABASE_URL} up
+      "
+    volumes:
+      - ./migrations/manifest:/migrations/manifest:ro
+    env_file:
+      - ./.env.manifest
+    networks:
+      - pluto-network
+
+  manifest-service:
+    image: ghcr.io/your-ghcr-username/pluto-manifest:latest
+    container_name: pluto_manifest
+    restart: unless-stopped
+    depends_on:
+      - postgres-manifest
+      - migrate-manifest
+      - auth-service
+    env_file:
+      - ./.env.manifest
+    volumes:
+      - ./configs/manifest.yaml:/configs/manifest.yaml:ro
+    networks:
+      - pluto-network
+
+  envoy:
+    image: envoyproxy/envoy
+    container_name: pluto_envoy
+    restart: unless-stopped
+    depends_on:
+      - auth-service
+      - manifest-service
+    ports:
+      - "8000:10000"
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml:ro
+    networks:
+      - pluto-network
+
+volumes:
+  postgres_auth_data:
+  postgres_manifest_data:
+
+networks:
+  pluto-network:
+    driver: bridge
