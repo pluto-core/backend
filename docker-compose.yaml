@@ -101,7 +101,7 @@ services:
       - pluto-network
 
   envoy:
-    image: envoyproxy/envoy
+    image: envoyproxy/envoy:v1.33-latest
     container_name: pluto_envoy
     restart: unless-stopped
     depends_on:
