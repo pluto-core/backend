@@ -2,11 +2,10 @@ name: Build & Deploy Pluto Services
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   workflow_dispatch:
 
 env:
-  # Образа будут публиковаться в GHCR
   AUTH_IMAGE: ghcr.io/${{ secrets.GHCR_USERNAME }}/pluto-auth
   MANIFEST_IMAGE: ghcr.io/${{ secrets.GHCR_USERNAME }}/pluto-manifest
 
@@ -15,32 +14,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-auth:
     runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-auth.outputs.cache-hit-key }}
     steps:
-      # 1) Получаем исходники
       - uses: actions/checkout@v4
 
-      # 2) Настраиваем Buildx для мультиплатформенной сборки (кэш, SBOM)
-      - uses: docker/setup-buildx-action@v3
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
 
-      # 3) Логинимся в GHCR
-      - uses: docker/login-action@v3
+      - name: Login to GHCR
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN || github.token }}
 
-      # 4) Кэшируем слои сборки
-      - name: Cache Docker layers
+      - name: Cache Docker layers (auth)
+        id: cache-auth
         uses: actions/cache@v3
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          path: /tmp/.buildx-cache-auth
+          key: build-auth-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            build-auth-${{ runner.os }}-
 
-      # 5) Собираем и пушим auth-service
       - name: Build & Push auth-service
         uses: docker/build-push-action@v6
         with:
@@ -50,15 +49,42 @@ jobs:
           tags: |
             ${{ env.AUTH_IMAGE }}:latest
             ${{ env.AUTH_IMAGE }}:${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to:   type=local,dest=/tmp/.buildx-cache-new,mode=max
-          outputs: type=local,dest=/tmp/.buildx-cache-new
-      - name: Move new cache (auth)
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          cache-from: type=local,src=/tmp/.buildx-cache-auth
+          cache-to: type=local,dest=/tmp/.buildx-cache-auth-new,mode=max
+          outputs: type=local,dest=/tmp/.buildx-cache-auth-new
 
-      # 6) Собираем и пушим manifest-service
+      - name: Update cache (auth)
+        if: always()
+        run: |
+          rm -rf /tmp/.buildx-cache-auth
+          mv /tmp/.buildx-cache-auth-new /tmp/.buildx-cache-auth
+
+  build-manifest:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-manifest.outputs.cache-hit-key }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN || github.token }}
+
+      - name: Cache Docker layers (manifest)
+        id: cache-manifest
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache-manifest
+          key: build-manifest-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            build-manifest-${{ runner.os }}-
+
       - name: Build & Push manifest-service
         uses: docker/build-push-action@v6
         with:
@@ -68,45 +94,40 @@ jobs:
           tags: |
             ${{ env.MANIFEST_IMAGE }}:latest
             ${{ env.MANIFEST_IMAGE }}:${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to:   type=local,dest=/tmp/.buildx-cache-new,mode=max
-          outputs: type=local,dest=/tmp/.buildx-cache-new
-      - name: Move new cache (manifest)
+          cache-from: type=local,src=/tmp/.buildx-cache-manifest
+          cache-to: type=local,dest=/tmp/.buildx-cache-manifest-new,mode=max
+          outputs: type=local,dest=/tmp/.buildx-cache-manifest-new
+
+      - name: Update cache (manifest)
+        if: always()
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          rm -rf /tmp/.buildx-cache-manifest
+          mv /tmp/.buildx-cache-manifest-new /tmp/.buildx-cache-manifest
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [ build-auth, build-manifest ]
     steps:
-      # Используем SSH для деплоя на сервер
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          # Если SSH-клч имеет passphrase, добавьте passphrase: ${{ secrets.SERVER_SSH_PASSPHRASE }}
+          passphrase: ''
           script: |
             cd ${{ secrets.DOCKER_COMPOSE_DIR }}
-            # 1) Логинимся в GHCR
+
+            # Login to GHCR
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-            # 2) Пуллим свежие образы
+            # Pull latest images
             docker pull ${{ env.AUTH_IMAGE }}:latest
             docker pull ${{ env.MANIFEST_IMAGE }}:latest
 
-            # 3) Останавливаем старые контейнеры (если есть)
-            docker-compose -f ~/pluto/docker-compose.yml down || true
+            # Restart services
+            docker-compose down || true
+            docker-compose up -d
 
-            # 4) Обновляем в docker-compose.yml теги образов на :latest
-            # Предполагается, что в ~/pluto/docker-compose.yml указаны
-            #   image: ghcr.io/USERNAME/pluto-auth:latest
-            #   image: ghcr.io/USERNAME/pluto-manifest:latest
-
-            # 5) Запускаем сервисы заново
-            docker-compose -f ~/pluto/docker-compose.yml up -d
-
-            # 6) Чистим неиспользуемые образы
+            # Cleanup
             docker image prune -f
