@@ -114,7 +114,6 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          passphrase: test
           script: |
             cd ${{ secrets.DOCKER_COMPOSE_DIR }}
 
